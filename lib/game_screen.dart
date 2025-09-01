@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'dart:math' as math;
 
+/// Game screen displaying Earth globe and NASA environmental data
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
 
@@ -11,28 +12,32 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
+  // Location data
   Position? _currentPosition;
   String? _locationName;
   bool _isLoading = true;
   String _locationStatus = 'Getting location...';
+
+  // Animation controllers
   late AnimationController _globeController;
   late AnimationController _dataController;
+
+  // Constants
+  static const Duration _globeAnimationDuration = Duration(seconds: 20);
+  static const Duration _dataAnimationDuration = Duration(seconds: 2);
+  static const Duration _locationTimeout = Duration(seconds: 15);
+
+  // Sample NASA data (in real app, this would come from API)
+  static const Map<String, String> _mockData = {
+    'temperature': '33°C',
+    'humidity': '75%',
+    'ndvi': 'N10',
+  };
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize animations
-    _globeController = AnimationController(
-      duration: const Duration(seconds: 20),
-      vsync: this,
-    )..repeat();
-
-    _dataController = AnimationController(
-      duration: const Duration(seconds: 2),
-      vsync: this,
-    );
-
+    _initializeAnimations();
     _getLocation();
   }
 
@@ -43,39 +48,34 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  /// Initialize animation controllers
+  void _initializeAnimations() {
+    _globeController = AnimationController(
+      duration: _globeAnimationDuration,
+      vsync: this,
+    )..repeat();
+
+    _dataController = AnimationController(
+      duration: _dataAnimationDuration,
+      vsync: this,
+    );
+  }
+
+  /// Get user's current location and convert to place name
   Future<void> _getLocation() async {
     try {
-      setState(() {
-        _isLoading = true;
-        _locationStatus = 'Getting location...';
-      });
+      _setLoadingState(true, 'Getting location...');
 
-      // Location permission should already be granted from welcome page
-      // Get current position directly
+      // Get current position (permission already granted from welcome page)
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
-        timeLimit: const Duration(seconds: 15),
+        timeLimit: _locationTimeout,
       );
 
-      // Get location name
-      String locationName = 'Unknown Location';
-      try {
-        List<Placemark> placemarks = await placemarkFromCoordinates(
-          position.latitude,
-          position.longitude,
-        );
+      // Convert coordinates to place name
+      String locationName = await _getLocationName(position);
 
-        if (placemarks.isNotEmpty) {
-          Placemark place = placemarks[0];
-          String city =
-              place.locality ?? place.subAdministrativeArea ?? 'Unknown City';
-          String country = place.country ?? 'Unknown Country';
-          locationName = '$city, $country';
-        }
-      } catch (e) {
-        locationName = 'Location Found'; // Generic name if geocoding fails
-      }
-
+      // Update state with location data
       setState(() {
         _currentPosition = position;
         _locationName = locationName.toUpperCase();
@@ -83,28 +83,67 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         _isLoading = false;
       });
 
+      // Animate data cards
       _dataController.forward();
     } catch (e) {
-      setState(() {
-        _locationStatus = 'Error getting precise location';
-        _isLoading = false;
-        _locationName = 'LOCATION FOUND'; // Generic fallback
-        // Create a default position without displaying coordinates
-        _currentPosition = Position(
-          latitude: 0.0, // Will not be displayed
-          longitude: 0.0, // Will not be displayed
-          timestamp: DateTime.now(),
-          accuracy: 0,
-          altitude: 0,
-          altitudeAccuracy: 0,
-          heading: 0,
-          headingAccuracy: 0,
-          speed: 0,
-          speedAccuracy: 0,
-        );
-      });
-      _dataController.forward();
+      _handleLocationError();
     }
+  }
+
+  /// Convert position coordinates to readable location name
+  Future<String> _getLocationName(Position position) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        String city =
+            place.locality ?? place.subAdministrativeArea ?? 'Unknown City';
+        String country = place.country ?? 'Unknown Country';
+        return '$city, $country';
+      }
+    } catch (e) {
+      // Geocoding failed, return generic message
+    }
+    return 'Location Found';
+  }
+
+  /// Handle location error by setting fallback state
+  void _handleLocationError() {
+    setState(() {
+      _locationStatus = 'Error getting precise location';
+      _isLoading = false;
+      _locationName = 'LOCATION FOUND';
+      _currentPosition = _createFallbackPosition();
+    });
+    _dataController.forward();
+  }
+
+  /// Create fallback position for error cases
+  Position _createFallbackPosition() {
+    return Position(
+      latitude: 0.0,
+      longitude: 0.0,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      altitudeAccuracy: 0,
+      heading: 0,
+      headingAccuracy: 0,
+      speed: 0,
+      speedAccuracy: 0,
+    );
+  }
+
+  /// Update loading state with message
+  void _setLoadingState(bool isLoading, String message) {
+    setState(() {
+      _isLoading = isLoading;
+      _locationStatus = message;
+    });
   }
 
   @override
@@ -113,22 +152,28 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFB347), // Orange
-              Color(0xFF87CEEB), // Sky blue
-              Color(0xFF4682B4), // Steel blue
-            ],
-          ),
-        ),
+        decoration: _buildBackgroundGradient(),
         child: _isLoading ? _buildLoadingScreen() : _buildGameScreen(),
       ),
     );
   }
 
+  /// Background gradient decoration
+  BoxDecoration _buildBackgroundGradient() {
+    return const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          Color(0xFFFFB347), // Orange
+          Color(0xFF87CEEB), // Sky blue
+          Color(0xFF4682B4), // Steel blue
+        ],
+      ),
+    );
+  }
+
+  /// Loading screen with status message
   Widget _buildLoadingScreen() {
     return Center(
       child: Column(
@@ -149,273 +194,279 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
+  /// Main game screen layout
   Widget _buildGameScreen() {
     return Row(
       children: [
-        // Left side - Earth Globe
-        Expanded(
-          flex: 1,
-          child: Container(
-            margin: const EdgeInsets.all(20),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFF8A50), Color(0xFFFFB74D)],
-              ),
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(color: const Color(0xFFD84315), width: 4),
-            ),
-            child: Column(
-              children: [
-                // Close button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Icon(
-                      Icons.location_on,
-                      color: Color(0xFFD84315),
-                      size: 30,
-                    ),
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD84315),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
+        Expanded(child: _buildEarthGlobeSection()),
+        Expanded(child: _buildLocationDataSection()),
+      ],
+    );
+  }
 
-                // Rotating Earth Globe
-                Expanded(
-                  child: Center(
-                    child: AnimatedBuilder(
-                      animation: _globeController,
-                      builder: (context, child) {
-                        return Transform.rotate(
-                          angle: _globeController.value * 2 * math.pi,
-                          child: Container(
-                            width: 200,
-                            height: 200,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const RadialGradient(
-                                colors: [
-                                  Color(0xFF4FC3F7), // Light blue
-                                  Color(0xFF29B6F6), // Blue
-                                  Color(0xFF0288D1), // Dark blue
-                                ],
-                              ),
-                              border: Border.all(color: Colors.white, width: 3),
-                            ),
-                            child: Stack(
-                              children: [
-                                // Continents (simplified pixel art style)
-                                Positioned(
-                                  top: 40,
-                                  left: 60,
-                                  child: Container(
-                                    width: 80,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF4CAF50),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 50,
-                                  right: 40,
-                                  child: Container(
-                                    width: 60,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF66BB6A),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                  ),
-                                ),
-                                // Grid overlay
-                                Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white.withOpacity(0.3),
-                                      width: 1,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
+  /// Earth globe section with rotating animation
+  Widget _buildEarthGlobeSection() {
+    return Container(
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
+      decoration: _buildCardDecoration(),
+      child: Column(
+        children: [
+          _buildHeaderRow(),
+          const SizedBox(height: 20),
+          Expanded(child: _buildRotatingEarthGlobe()),
+          const SizedBox(height: 20),
+          _buildNextButton(),
+        ],
+      ),
+    );
+  }
 
-                // NEXT button
-                Container(
-                  width: 150,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
-                    ),
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      color: const Color(0xFF4A148C),
-                      width: 2,
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'NEXT',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'monospace',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+  /// Location and data section with NASA environmental data
+  Widget _buildLocationDataSection() {
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildLocationDisplay(),
+          const SizedBox(height: 20),
+          _buildDataCardsRow(),
+          const Spacer(),
+          _buildHelpButton(),
+        ],
+      ),
+    );
+  }
+
+  /// Card decoration used for containers
+  BoxDecoration _buildCardDecoration() {
+    return BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xFFFF8A50), Color(0xFFFFB74D)],
+      ),
+      borderRadius: BorderRadius.circular(15),
+      border: Border.all(color: const Color(0xFFD84315), width: 4),
+    );
+  }
+
+  /// Header row with location and close icons
+  Widget _buildHeaderRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Icon(Icons.location_on, color: Color(0xFFD84315), size: 30),
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: const Color(0xFFD84315),
+            borderRadius: BorderRadius.circular(5),
           ),
-        ),
-
-        // Right side - Location and Data
-        Expanded(
-          flex: 1,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Location display
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFFF8A50), Color(0xFFFFB74D)],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFFD84315),
-                      width: 2,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        'Your Location is:',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF8B4513),
-                          fontFamily: 'monospace',
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFE0B2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.expand_more,
-                              color: Color(0xFF8B4513),
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              _locationName ?? 'KHULNA, BANGLADESH',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF8B4513),
-                                fontFamily: 'monospace',
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                // Data cards
-                Row(
-                  children: [
-                    _buildDataCard(
-                      'TEMPERATURE',
-                      '33°C',
-                      Icons.thermostat,
-                      const Color(0xFFFF5722),
-                    ),
-                    const SizedBox(width: 10),
-                    _buildDataCard(
-                      'HUMIDITY',
-                      '75%',
-                      Icons.water_drop,
-                      const Color(0xFF2196F3),
-                    ),
-                    const SizedBox(width: 10),
-                    _buildDataCard(
-                      'NDVI',
-                      'N10',
-                      Icons.eco,
-                      const Color(0xFF4CAF50),
-                    ),
-                  ],
-                ),
-
-                const Spacer(),
-
-                // Help button
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFF8A50),
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFD84315),
-                        width: 3,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.help,
-                      color: Colors.white,
-                      size: 30,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: const Icon(Icons.close, color: Colors.white, size: 20),
         ),
       ],
     );
   }
 
+  /// Rotating Earth globe with continents
+  Widget _buildRotatingEarthGlobe() {
+    return Center(
+      child: AnimatedBuilder(
+        animation: _globeController,
+        builder: (context, child) {
+          return Transform.rotate(
+            angle: _globeController.value * 2 * math.pi,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const RadialGradient(
+                  colors: [
+                    Color(0xFF4FC3F7), // Light blue
+                    Color(0xFF29B6F6), // Blue
+                    Color(0xFF0288D1), // Dark blue
+                  ],
+                ),
+                border: Border.all(color: Colors.white, width: 3),
+              ),
+              child: Stack(
+                children: [
+                  _buildContinent(40, 60, 80, 60),
+                  _buildContinent(null, 40, 60, 40, bottom: 50),
+                  _buildGridOverlay(),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Build a continent shape for the globe
+  Widget _buildContinent(
+    double? top,
+    double? left,
+    double width,
+    double height, {
+    double? bottom,
+  }) {
+    return Positioned(
+      top: top,
+      left: left,
+      bottom: bottom,
+      right: left == null ? 40 : null,
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color:
+              top == null ? const Color(0xFF66BB6A) : const Color(0xFF4CAF50),
+          borderRadius: BorderRadius.circular(height / 2),
+        ),
+      ),
+    );
+  }
+
+  /// Grid overlay for the globe
+  Widget _buildGridOverlay() {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+      ),
+    );
+  }
+
+  /// Next button
+  Widget _buildNextButton() {
+    return Container(
+      width: 150,
+      height: 50,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
+        ),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: const Color(0xFF4A148C), width: 2),
+      ),
+      child: const Center(
+        child: Text(
+          'NEXT',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'monospace',
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Location display widget
+  Widget _buildLocationDisplay() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFF8A50), Color(0xFFFFB74D)],
+        ),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color(0xFFD84315), width: 2),
+      ),
+      child: Column(
+        children: [
+          const Text(
+            'Your Location is:',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF8B4513),
+              fontFamily: 'monospace',
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE0B2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.expand_more, color: Color(0xFF8B4513)),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: Text(
+                    _locationName ?? 'LOCATION FOUND',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8B4513),
+                      fontFamily: 'monospace',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Row of NASA data cards
+  Widget _buildDataCardsRow() {
+    return Row(
+      children: [
+        _buildDataCard(
+          'TEMPERATURE',
+          _mockData['temperature']!,
+          Icons.thermostat,
+          const Color(0xFFFF5722),
+        ),
+        const SizedBox(width: 10),
+        _buildDataCard(
+          'HUMIDITY',
+          _mockData['humidity']!,
+          Icons.water_drop,
+          const Color(0xFF2196F3),
+        ),
+        const SizedBox(width: 10),
+        _buildDataCard(
+          'NDVI',
+          _mockData['ndvi']!,
+          Icons.eco,
+          const Color(0xFF4CAF50),
+        ),
+      ],
+    );
+  }
+
+  /// Help button positioned at bottom right
+  Widget _buildHelpButton() {
+    return Align(
+      alignment: Alignment.bottomRight,
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFF8A50),
+          shape: BoxShape.circle,
+          border: Border.all(color: const Color(0xFFD84315), width: 3),
+        ),
+        child: const Icon(Icons.help, color: Colors.white, size: 25),
+      ),
+    );
+  }
+
+  /// Individual data card widget with animation
   Widget _buildDataCard(
     String label,
     String value,
