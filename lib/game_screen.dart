@@ -50,33 +50,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         _locationStatus = 'Getting location...';
       });
 
-      // Check if location services are enabled
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        setState(() {
-          _locationStatus = 'Location services are disabled.';
-          _isLoading = false;
-        });
-        return;
-      }
-
-      // Request location permission
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          setState(() {
-            _locationStatus = 'Location permission denied.';
-            _isLoading = false;
-          });
-          return;
-        }
-      }
-
-      // Get current position
+      // Location permission should already be granted from welcome page
+      // Get current position directly
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
-        timeLimit: const Duration(seconds: 10),
+        desiredAccuracy: LocationAccuracy.best,
+        timeLimit: const Duration(seconds: 15),
       );
 
       // Get location name
@@ -95,7 +73,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           locationName = '$city, $country';
         }
       } catch (e) {
-        locationName = 'KHULNA, BANGLADESH'; // Default for demo
+        locationName = 'Location Found'; // Generic name if geocoding fails
       }
 
       setState(() {
@@ -108,12 +86,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       _dataController.forward();
     } catch (e) {
       setState(() {
-        _locationStatus = 'Error getting location';
+        _locationStatus = 'Error getting precise location';
         _isLoading = false;
-        _locationName = 'KHULNA, BANGLADESH'; // Default for demo
+        _locationName = 'LOCATION FOUND'; // Generic fallback
+        // Create a default position without displaying coordinates
         _currentPosition = Position(
-          latitude: 22.8456,
-          longitude: 89.5403,
+          latitude: 0.0, // Will not be displayed
+          longitude: 0.0, // Will not be displayed
           timestamp: DateTime.now(),
           accuracy: 0,
           altitude: 0,

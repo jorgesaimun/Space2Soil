@@ -1,8 +1,100 @@
 import 'package:flutter/material.dart';
 import 'package:demo_game/game_screen.dart';
+import 'package:geolocator/geolocator.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  bool _isRequestingLocation = false;
+
+  Future<void> _requestLocationAndNavigate() async {
+    setState(() {
+      _isRequestingLocation = true;
+    });
+
+    try {
+      // Check if location services are enabled
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() {
+          _isRequestingLocation = false;
+        });
+        _showLocationDialog(
+          'Location Services Disabled',
+          'Please enable location services to continue.',
+        );
+        return;
+      }
+
+      // Request location permission
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          setState(() {
+            _isRequestingLocation = false;
+          });
+          _showLocationDialog(
+            'Permission Denied',
+            'Location permission is required to access NASA data for your area.',
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          _isRequestingLocation = false;
+        });
+        _showLocationDialog(
+          'Permission Permanently Denied',
+          'Please enable location permission in your device settings.',
+        );
+        return;
+      }
+
+      setState(() {
+        _isRequestingLocation = false;
+      });
+
+      // Navigate to game screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const GameScreen()),
+      );
+    } catch (e) {
+      setState(() {
+        _isRequestingLocation = false;
+      });
+      _showLocationDialog(
+        'Error',
+        'Failed to get location permission. Please try again.',
+      );
+    }
+  }
+
+  void _showLocationDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -213,21 +305,17 @@ class WelcomePage extends StatelessWidget {
                                             borderRadius: BorderRadius.circular(
                                               25,
                                             ),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (context) =>
-                                                          const GameScreen(),
-                                                ),
-                                              );
-                                            },
+                                            onTap:
+                                                _isRequestingLocation
+                                                    ? null
+                                                    : _requestLocationAndNavigate,
                                             child: Center(
                                               child: FittedBox(
                                                 fit: BoxFit.scaleDown,
                                                 child: Text(
-                                                  'PLAY',
+                                                  _isRequestingLocation
+                                                      ? 'LOADING...'
+                                                      : 'PLAY',
                                                   style: TextStyle(
                                                     fontSize:
                                                         MediaQuery.of(
