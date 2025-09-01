@@ -1,8 +1,16 @@
 import 'package:demo_game/splash_screen.dart';
-import 'package:demo_game/welcome_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set preferred orientation to landscape
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+
   runApp(MyApp());
 }
 
