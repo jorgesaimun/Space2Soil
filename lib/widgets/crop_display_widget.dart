@@ -134,7 +134,7 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
                 'Name: ${crop.name}',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                   fontFamily: 'monospace',
@@ -142,7 +142,7 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           // Crop image
           Expanded(
             flex: 2,
@@ -192,7 +192,7 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // Related items placeholder
           Wrap(
             alignment: WrapAlignment.center,
