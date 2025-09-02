@@ -1,6 +1,7 @@
 import 'package:demo_game/widgets/earth_globe_section.dart';
 import 'package:demo_game/widgets/location_data_section.dart';
 import 'package:demo_game/widgets/loading_screen.dart';
+import 'package:demo_game/crop_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -182,7 +183,17 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           children: [
             Expanded(
               flex: isWideScreen ? 1 : 2,
-              child: EarthGlobeSection(globeController: _globeController),
+              child: EarthGlobeSection(
+                globeController: _globeController,
+                onNextPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CropSelectionScreen(),
+                    ),
+                  );
+                },
+              ),
             ),
             Expanded(
               flex: isWideScreen ? 1 : 2,

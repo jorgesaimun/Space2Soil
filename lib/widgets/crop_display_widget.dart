@@ -1,0 +1,298 @@
+import 'package:flutter/material.dart';
+import '../models/crop.dart';
+
+class CropDisplayWidget extends StatefulWidget {
+  final List<Crop> crops;
+  final Function(int) onCropChanged;
+  final VoidCallback? onStart;
+
+  const CropDisplayWidget({
+    super.key,
+    required this.crops,
+    required this.onCropChanged,
+    this.onStart,
+  });
+
+  @override
+  State<CropDisplayWidget> createState() => _CropDisplayWidgetState();
+}
+
+class _CropDisplayWidgetState extends State<CropDisplayWidget>
+    with TickerProviderStateMixin {
+  late PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  void _goToPrevious() {
+    if (_currentIndex > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  void _goToNext() {
+    if (_currentIndex < widget.crops.length - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Column(
+          children: [
+            // Crop indicator dots
+            _buildCropIndicator(),
+            const SizedBox(height: 20),
+            // Main crop display area
+            Expanded(
+              child: PageView.builder(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                  widget.onCropChanged(index);
+                },
+                itemCount: widget.crops.length,
+                itemBuilder: (context, index) {
+                  final crop = widget.crops[index];
+                  return _buildCropCard(crop, constraints);
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+            // Navigation and start section
+            _buildNavigationSection(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCropIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(widget.crops.length, (index) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color:
+                index == _currentIndex
+                    ? const Color(0xFFD84315)
+                    : const Color(0xFFFFE0B2),
+            border: Border.all(color: const Color(0xFFD84315), width: 2),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildCropCard(Crop crop, BoxConstraints constraints) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFF8A50),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: const Color(0xFFD84315), width: 4),
+      ),
+      child: Column(
+        children: [
+          // Crop name header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFE0B2),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: const Color(0xFFD84315), width: 2),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                'Name: ${crop.name}',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontFamily: 'monospace',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Crop image
+          Expanded(
+            flex: 2,
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFE0B2),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: const Color(0xFFD84315), width: 3),
+              ),
+              child: Center(
+                child: Image.asset(
+                  crop.imagePath,
+                  width: constraints.maxWidth * 0.25,
+                  height: constraints.maxHeight * 0.25,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      width: constraints.maxWidth * 0.25,
+                      height: constraints.maxHeight * 0.25,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.image_not_supported,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            crop.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Related items placeholder
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            children: List.generate(4, (index) {
+              return Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFE0B2),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: const Color(0xFFD84315), width: 2),
+                ),
+                child: const Icon(
+                  Icons.grass,
+                  color: Color(0xFF4CAF50),
+                  size: 18,
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavigationSection() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // Previous button
+        _buildNavigationButton(
+          icon: Icons.chevron_left,
+          isEnabled: _currentIndex > 0,
+          onPressed: _goToPrevious,
+        ),
+        // Start button
+        Container(
+          width: 140,
+          height: 50,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
+            ),
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: Colors.black, width: 3),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(25),
+              onTap: widget.onStart,
+              child: const Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    'START',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        // Next button
+        _buildNavigationButton(
+          icon: Icons.chevron_right,
+          isEnabled: _currentIndex < widget.crops.length - 1,
+          onPressed: _goToNext,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNavigationButton({
+    required IconData icon,
+    required bool isEnabled,
+    VoidCallback? onPressed,
+  }) {
+    return Container(
+      width: 50,
+      height: 50,
+      decoration: BoxDecoration(
+        color: isEnabled ? const Color(0xFFD84315) : Colors.grey,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.black, width: 2),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: isEnabled ? onPressed : null,
+          child: Icon(icon, color: Colors.white, size: 28),
+        ),
+      ),
+    );
+  }
+}

@@ -3,8 +3,13 @@ import 'dart:math' as math;
 
 class EarthGlobeSection extends StatelessWidget {
   final AnimationController globeController;
+  final VoidCallback? onNextPressed;
 
-  const EarthGlobeSection({super.key, required this.globeController});
+  const EarthGlobeSection({
+    super.key,
+    required this.globeController,
+    this.onNextPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -131,14 +136,21 @@ class EarthGlobeSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         border: Border.all(color: const Color(0xFF4A148C), width: 2),
       ),
-      child: const Center(
-        child: Text(
-          'NEXT',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'monospace',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: onNextPressed,
+          child: const Center(
+            child: Text(
+              'NEXT',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+              ),
+            ),
           ),
         ),
       ),
