@@ -38,8 +38,8 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/garden.jpg'),
-            fit: BoxFit.cover,
+            image: AssetImage('assets/images/map.jpg'),
+            fit: BoxFit.fitHeight,
           ),
         ),
         child: SafeArea(

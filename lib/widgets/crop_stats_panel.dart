@@ -12,12 +12,12 @@ class CropStatsPanel extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Responsive font sizes based on available width
-        double titleFontSize = constraints.maxWidth < 250 ? 18 : 24;
-        double labelFontSize = constraints.maxWidth < 250 ? 14 : 16;
-        double textFontSize = constraints.maxWidth < 250 ? 12 : 14;
+        double titleFontSize = constraints.maxWidth < 250 ? 14 : 28;
+        double labelFontSize = constraints.maxWidth < 250 ? 10 : 12;
+        double textFontSize = constraints.maxWidth < 250 ? 10 : 12;
 
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: const Color(0xFFFF8A50),
             borderRadius: BorderRadius.circular(15),
@@ -27,11 +27,11 @@ class CropStatsPanel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildHeader(titleFontSize),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
               _buildCropCycleCard(labelFontSize, textFontSize),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               _buildPlacesCard(labelFontSize, textFontSize),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               Expanded(child: _buildNotesCard(labelFontSize, textFontSize)),
             ],
           ),
@@ -104,7 +104,7 @@ class CropStatsPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFD84315), width: 2),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -116,7 +116,7 @@ class CropStatsPanel extends StatelessWidget {
               fontFamily: 'monospace',
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(width: 5),
           Expanded(
             child: SingleChildScrollView(
               child: Text(
@@ -149,7 +149,7 @@ class CropStatsPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: const Color(0xFFD84315), width: 2),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -161,7 +161,7 @@ class CropStatsPanel extends StatelessWidget {
               fontFamily: 'monospace',
             ),
           ),
-          const SizedBox(height: 5),
+          const SizedBox(width: 5),
           Text(
             value,
             style: TextStyle(
