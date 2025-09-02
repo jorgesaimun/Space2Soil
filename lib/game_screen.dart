@@ -21,6 +21,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   // Animation controllers
   late AnimationController _globeController;
   late AnimationController _dataController;
+  late AnimationController _loadingAnimationController;
 
   // Constants
   static const Duration _globeAnimationDuration = Duration(seconds: 20);
@@ -45,6 +46,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void dispose() {
     _globeController.dispose();
     _dataController.dispose();
+    _loadingAnimationController.dispose();
     super.dispose();
   }
 
@@ -59,6 +61,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       duration: _dataAnimationDuration,
       vsync: this,
     );
+
+    _loadingAnimationController = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   /// Get user's current location and convert to place name
@@ -175,32 +182,88 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   /// Loading screen with status message
   Widget _buildLoadingScreen() {
+    final screenSize = MediaQuery.of(context).size;
+    final imageSize = screenSize.width * 0.6;
+
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
-          const SizedBox(height: 30),
-          Text(
-            _locationStatus,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Animated map image
+            AnimatedBuilder(
+              animation: _loadingAnimationController,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: 1 + (_loadingAnimationController.value * 0.1),
+                  child: Opacity(
+                    opacity: 0.8 + (_loadingAnimationController.value * 0.2),
+                    child: Container(
+                      width: imageSize,
+                      height: imageSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: const DecorationImage(
+                          image: AssetImage('assets/images/map.jpg'),
+                          fit: BoxFit.cover,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ),
-        ],
+            const SizedBox(height: 40),
+
+            // Loading status text
+            Text(
+              _locationStatus,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'monospace',
+                letterSpacing: 1.2,
+              ),
+            ),
+            const SizedBox(height: 15),
+            const CircularProgressIndicator(
+              color: Colors.white,
+              strokeWidth: 3,
+            ),
+          ],
+        ),
       ),
     );
   }
 
   /// Main game screen layout
   Widget _buildGameScreen() {
-    return Row(
-      children: [
-        Expanded(child: _buildEarthGlobeSection()),
-        Expanded(child: _buildLocationDataSection()),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Adjust layout based on screen width
+        bool isWideScreen = constraints.maxWidth > 600;
+
+        return Row(
+          children: [
+            Expanded(
+              flex: isWideScreen ? 1 : 2,
+              child: _buildEarthGlobeSection(),
+            ),
+            Expanded(
+              flex: isWideScreen ? 1 : 2,
+              child: _buildLocationDataSection(),
+            ),
+          ],
+        );
+      },
     );
   }
 
