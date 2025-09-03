@@ -13,7 +13,7 @@ class LoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final imageSize = screenSize.width * 0.6;
+    final imageSize = screenSize.width * 0.3;
 
     return Center(
       child: SingleChildScrollView(
@@ -34,7 +34,7 @@ class LoadingScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: const DecorationImage(
-                          image: AssetImage('assets/images/map.jpg'),
+                          image: AssetImage('assets/images/map.png'),
                           fit: BoxFit.cover,
                         ),
                         boxShadow: [

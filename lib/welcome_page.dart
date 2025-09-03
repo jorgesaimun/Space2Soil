@@ -103,14 +103,9 @@ class _WelcomePageState extends State<WelcomePage> {
         width: double.infinity,
         height: double.infinity,
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF9C7FB8), // Purple
-              Color(0xFF7B68B1), // Darker purple
-              Color(0xFF5C4A8F), // Deep purple
-            ],
+          image: DecorationImage(
+            image: AssetImage('assets/images/bg1.png'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(

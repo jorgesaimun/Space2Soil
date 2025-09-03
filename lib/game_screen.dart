@@ -25,6 +25,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   late AnimationController _dataController;
   late AnimationController _loadingAnimationController;
 
+  // Loading timing
+  DateTime? _loadingStartTime;
+
   // Constants
   static const Duration _globeAnimationDuration = Duration(seconds: 20);
   static const Duration _dataAnimationDuration = Duration(seconds: 2);
@@ -75,6 +78,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     try {
       _setLoadingState(true, 'Getting location...');
 
+      // Record start time for minimum loading duration
+      _loadingStartTime = DateTime.now();
+      const minLoadingDuration = Duration(milliseconds: 1500); // 1.5 seconds
+
       // Get current position (permission already granted from welcome page)
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best,
@@ -83,6 +90,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
       // Convert coordinates to place name
       String locationName = await _getLocationName(position);
+
+      // Calculate elapsed time and remaining time needed
+      final elapsedTime = DateTime.now().difference(_loadingStartTime!);
+      final remainingTime = minLoadingDuration - elapsedTime;
+
+      // Wait for the remaining time if needed to ensure minimum 1.5 seconds
+      if (remainingTime.inMilliseconds > 0) {
+        await Future.delayed(remainingTime);
+      }
 
       // Update state with location data
       setState(() {
@@ -94,7 +110,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       // Animate data cards
       _dataController.forward();
     } catch (e) {
-      _handleLocationError();
+      await _handleLocationError();
     }
   }
 
@@ -120,7 +136,20 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   }
 
   /// Handle location error by setting fallback state
-  void _handleLocationError() {
+  Future<void> _handleLocationError() async {
+    const minLoadingDuration = Duration(milliseconds: 1500); // 1.5 seconds
+
+    if (_loadingStartTime != null) {
+      // Calculate elapsed time and remaining time needed
+      final elapsedTime = DateTime.now().difference(_loadingStartTime!);
+      final remainingTime = minLoadingDuration - elapsedTime;
+
+      // Wait for the remaining time if needed to ensure minimum 1.5 seconds
+      if (remainingTime.inMilliseconds > 0) {
+        await Future.delayed(remainingTime);
+      }
+    }
+
     setState(() {
       _locationStatus = 'Error getting precise location';
       _isLoading = false;
