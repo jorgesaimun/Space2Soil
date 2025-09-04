@@ -32,7 +32,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.95,
+              height: MediaQuery.of(context).size.height * 0.8,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -106,11 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 // Language dropdown
                                 _buildDropdownSetting(),
 
-                                const SizedBox(height: 10),
-
-                                // Back button
-                                _buildBackButton(),
-
+                                const SizedBox(height: 20), // Bottom padding
                               ],
                             ),
                           ),
@@ -157,6 +153,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                   ),
+
+                  // Back button positioned at bottom left
+                  Positioned(bottom: 0, right: 50, child: _buildBackButton()),
                 ],
               ),
             ),
@@ -350,7 +349,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onTap: () => Navigator.pop(context),
       child: Container(
         width: 100,
-        height: 40,
+        height: 60,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
@@ -369,9 +368,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           child: Text(
             'BACK',
             style: GoogleFonts.vt323(
-              fontSize: 18,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.black,
               letterSpacing: 1,
             ),
           ),
