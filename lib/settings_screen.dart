@@ -40,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   // Main wooden dialog background
                   Container(
-                    margin: const EdgeInsets.only(top: 25),
+                    margin: const EdgeInsets.only(top: 25, bottom: 25),
                     decoration: BoxDecoration(
                       color: const Color(0xFF8B4513), // Wood brown
                       borderRadius: BorderRadius.circular(20),
@@ -106,12 +106,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 // Language dropdown
                                 _buildDropdownSetting(),
 
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 10),
 
                                 // Back button
                                 _buildBackButton(),
 
-                                const SizedBox(height: 10), // Bottom padding
                               ],
                             ),
                           ),
@@ -235,7 +234,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required ValueChanged<bool> onChanged,
   }) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: const Color(0xFFD4A574), // Light wood
         borderRadius: BorderRadius.circular(10),
@@ -285,7 +284,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildDropdownSetting() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: const Color(0xFFD4A574), // Light wood
         borderRadius: BorderRadius.circular(10),
@@ -306,37 +305,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
             decoration: BoxDecoration(
               color: const Color(0xFFFFE4B5),
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(4),
               border: Border.all(color: const Color(0xFF8B4513), width: 1),
             ),
-            child: DropdownButton<String>(
-              value: _selectedLanguage,
-              underline: const SizedBox(),
-              icon: const Icon(
-                Icons.arrow_drop_down,
-                color: Color(0xFF654321),
-                size: 20,
+            height: 26, // Fixed height to match toggle switch
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _selectedLanguage,
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xFF654321),
+                  size: 16,
+                ),
+                style: GoogleFonts.vt323(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                items:
+                    _languages.map((String language) {
+                      return DropdownMenuItem<String>(
+                        value: language,
+                        child: Text(language),
+                      );
+                    }).toList(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(() => _selectedLanguage = newValue);
+                  }
+                },
               ),
-              style: GoogleFonts.vt323(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              items:
-                  _languages.map((String language) {
-                    return DropdownMenuItem<String>(
-                      value: language,
-                      child: Text(language),
-                    );
-                  }).toList(),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() => _selectedLanguage = newValue);
-                }
-              },
             ),
           ),
         ],
