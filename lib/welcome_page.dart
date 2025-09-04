@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:demo_game/game_screen.dart';
+import 'package:demo_game/settings_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -141,13 +142,13 @@ class _WelcomePageState extends State<WelcomePage> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Color(0xFFFF8A50), // Orange
-                        Color(0xFFFFB74D), // Light orange
+                        Color(0xFFFFF8DC), // Cream
+                        Color(0xFFFFE4B5), // Moccasin/Light cream
                       ],
                     ),
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
-                      color: const Color(0xFFD84315),
+                      color: const Color(0xFFFF8A50),
                       width: 4,
                     ),
                     boxShadow: [
@@ -161,47 +162,47 @@ class _WelcomePageState extends State<WelcomePage> {
                   child: Stack(
                     children: [
                       // Close button
-                      Positioned(
-                        top: 10,
-                        right: 10,
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFD84315),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: Colors.white, width: 2),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'X',
-                              style: GoogleFonts.vt323(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                      // Positioned(
+                      //   top: 10,
+                      //   right: 10,
+                      //   child: Container(
+                      //     width: 35,
+                      //     height: 35,
+                      //     decoration: BoxDecoration(
+                      //       color: const Color(0xFFD84315),
+                      //       borderRadius: BorderRadius.circular(8),
+                      //       border: Border.all(color: Colors.white, width: 2),
+                      //     ),
+                      //     child: Center(
+                      //       child: Text(
+                      //         'X',
+                      //         style: GoogleFonts.vt323(
+                      //           color: Colors.white,
+                      //           fontSize: 20,
+                      //           fontWeight: FontWeight.bold,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
 
-                      // Pixel butterfly decoration
-                      Positioned(
-                        top: 15,
-                        right: 55,
-                        child: Container(
-                          width: 45,
-                          height: 35,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFFD84315),
-                          ),
-                          child: const Icon(
-                            Icons.flutter_dash,
-                            size: 25,
-                            color: Colors.yellow,
-                          ),
-                        ),
-                      ),
+                      // // Pixel butterfly decoration
+                      // Positioned(
+                      //   top: 15,
+                      //   right: 55,
+                      //   child: Container(
+                      //     width: 45,
+                      //     height: 35,
+                      //     decoration: const BoxDecoration(
+                      //       color: Color(0xFFD84315),
+                      //     ),
+                      //     child: const Icon(
+                      //       Icons.flutter_dash,
+                      //       size: 25,
+                      //       color: Colors.yellow,
+                      //     ),
+                      //   ),
+                      // ),
 
                       // Main content
                       Padding(
@@ -223,7 +224,9 @@ class _WelcomePageState extends State<WelcomePage> {
                                           MediaQuery.of(context).size.width *
                                           0.05,
                                       fontWeight: FontWeight.bold,
-                                      color: const Color(0xFF8B4513), // Brown
+                                      color: const Color(
+                                        0xFF654321,
+                                      ), // Dark brown
                                       height: 1.1,
                                     ),
                                   ),
@@ -244,7 +247,9 @@ class _WelcomePageState extends State<WelcomePage> {
                                         MediaQuery.of(context).size.width *
                                         0.03,
                                     fontWeight: FontWeight.bold,
-                                    color: const Color(0xFF8B4513), // Brown
+                                    color: const Color(
+                                      0xFF8B4513,
+                                    ), // Reddish brown
                                     letterSpacing: 1,
                                   ),
                                 ),
@@ -331,30 +336,42 @@ class _WelcomePageState extends State<WelcomePage> {
                                     const SizedBox(width: 20),
 
                                     // Settings button
-                                    Container(
-                                      width: 45,
-                                      height: 45,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFF8A50),
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: const Color(0xFFD84315),
-                                          width: 2,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.3,
-                                            ),
-                                            blurRadius: 6,
-                                            offset: const Offset(0, 3),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) =>
+                                                    const SettingsScreen(),
                                           ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.settings,
-                                        size: 22,
-                                        color: Colors.white,
+                                        );
+                                      },
+                                      child: Container(
+                                        width: 45,
+                                        height: 45,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFF8A50),
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: const Color(0xFFD84315),
+                                            width: 2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(
+                                                0.3,
+                                              ),
+                                              blurRadius: 6,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: const Icon(
+                                          Icons.settings,
+                                          size: 22,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -369,58 +386,74 @@ class _WelcomePageState extends State<WelcomePage> {
                 ),
               ),
 
-              // Space2Soil logo in top left
+              // Rice image in bottom left corner
               Positioned(
-                top: 20,
+                bottom: 0,
                 left: 20,
                 child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2D5A87).withOpacity(0.8),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Use logo.png instead of icon
-                      Container(
-                        width: 30,
-                        height: 30,
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                          width: 30,
-                          height: 30,
-                          errorBuilder: (context, error, stackTrace) {
-                            // Fallback to icon if logo fails to load
-                            return Container(
-                              width: 30,
-                              height: 30,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Color(0xFF7CB342),
-                              ),
-                              child: const Icon(
-                                Icons.eco,
-                                color: Colors.white,
-                                size: 18,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Space2Soil',
-                        style: GoogleFonts.vt323(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  width: 150,
+                  height: 160,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/rice_image.png'),
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
+
+              // Space2Soil logo in top left
+              // Positioned(
+              //   top: 20,
+              //   left: 20,
+              //   child: Container(
+              //     padding: const EdgeInsets.all(8),
+              //     decoration: BoxDecoration(
+              //       color: const Color(0xFF2D5A87).withOpacity(0.8),
+              //       borderRadius: BorderRadius.circular(10),
+              //     ),
+              //     child: Row(
+              //       mainAxisSize: MainAxisSize.min,
+              //       children: [
+              //         // Use logo.png instead of icon
+              //         Container(
+              //           width: 30,
+              //           height: 30,
+              //           child: Image.asset(
+              //             'assets/images/logo.png',
+              //             width: 30,
+              //             height: 30,
+              //             errorBuilder: (context, error, stackTrace) {
+              //               // Fallback to icon if logo fails to load
+              //               return Container(
+              //                 width: 30,
+              //                 height: 30,
+              //                 decoration: const BoxDecoration(
+              //                   shape: BoxShape.circle,
+              //                   color: Color(0xFF7CB342),
+              //                 ),
+              //                 child: const Icon(
+              //                   Icons.eco,
+              //                   color: Colors.white,
+              //                   size: 18,
+              //                 ),
+              //               );
+              //             },
+              //           ),
+              //         ),
+              //         const SizedBox(width: 8),
+              //         Text(
+              //           'Space2Soil',
+              //           style: GoogleFonts.vt323(
+              //             color: Colors.white,
+              //             fontSize: 16,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
