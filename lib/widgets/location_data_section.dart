@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:demo_game/help_screen.dart';
 
 class LocationDataSection extends StatelessWidget {
   final String? locationName;
@@ -23,7 +24,7 @@ class LocationDataSection extends StatelessWidget {
           const SizedBox(height: 20),
           _buildDataCardsRow(),
           const Spacer(),
-          _buildHelpButton(),
+          _buildHelpButton(context),
         ],
       ),
     );
@@ -110,18 +111,40 @@ class LocationDataSection extends StatelessWidget {
     );
   }
 
-  Widget _buildHelpButton() {
+  Widget _buildHelpButton(BuildContext context) {
     return Align(
       alignment: Alignment.bottomRight,
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFF8A50),
-          shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFD84315), width: 3),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HelpScreen()),
+          );
+        },
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFF8A50), // Orange background
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFD84315), width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Image(
+              image: AssetImage('assets/images/questins_icon.png'),
+             // color: Colors.white, // White color for the icon
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
-        child: const Icon(Icons.help, color: Colors.white, size: 25),
       ),
     );
   }
@@ -139,7 +162,7 @@ class LocationDataSection extends StatelessWidget {
           return Transform.scale(
             scale: 0.8 + (dataController.value * 0.2),
             child: Container(
-              height: 120,
+              height: 100,
               decoration: BoxDecoration(
                 color: const Color(0xFFFFE0B2),
                 borderRadius: BorderRadius.circular(10),
