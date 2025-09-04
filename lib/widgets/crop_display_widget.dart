@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/crop.dart';
 
 class CropDisplayWidget extends StatefulWidget {
@@ -133,11 +134,10 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
               child: Text(
                 'Name: ${crop.name}',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 20,
+                style: GoogleFonts.vt323(
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
-                  fontFamily: 'monospace',
                 ),
               ),
             ),
@@ -245,16 +245,15 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
             child: InkWell(
               borderRadius: BorderRadius.circular(25),
               onTap: widget.onStart,
-              child: const Center(
+              child: Center(
                 child: FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
                     'START',
-                    style: TextStyle(
-                      fontSize: 20,
+                    style: GoogleFonts.vt323(
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
-                      fontFamily: 'monospace',
                     ),
                   ),
                 ),

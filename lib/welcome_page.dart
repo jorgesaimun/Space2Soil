@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:demo_game/game_screen.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -171,12 +172,12 @@ class _WelcomePageState extends State<WelcomePage> {
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.white, width: 2),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               'X',
-                              style: TextStyle(
+                              style: GoogleFonts.vt323(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -217,13 +218,12 @@ class _WelcomePageState extends State<WelcomePage> {
                                   child: Text(
                                     'Allow Space2Soil to\naccess your location',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: GoogleFonts.vt323(
                                       fontSize:
                                           MediaQuery.of(context).size.width *
-                                          0.045,
+                                          0.05,
                                       fontWeight: FontWeight.bold,
                                       color: const Color(0xFF8B4513), // Brown
-                                      fontFamily: 'monospace',
                                       height: 1.1,
                                     ),
                                   ),
@@ -239,13 +239,12 @@ class _WelcomePageState extends State<WelcomePage> {
                                 child: Text(
                                   'FOR ACCURATE NASA DATA',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: GoogleFonts.vt323(
                                     fontSize:
                                         MediaQuery.of(context).size.width *
-                                        0.025,
+                                        0.03,
                                     fontWeight: FontWeight.bold,
                                     color: const Color(0xFF8B4513), // Brown
-                                    fontFamily: 'monospace',
                                     letterSpacing: 1,
                                   ),
                                 ),
@@ -311,15 +310,14 @@ class _WelcomePageState extends State<WelcomePage> {
                                                   _isRequestingLocation
                                                       ? 'LOADING...'
                                                       : 'PLAY',
-                                                  style: TextStyle(
+                                                  style: GoogleFonts.vt323(
                                                     fontSize:
                                                         MediaQuery.of(
                                                           context,
                                                         ).size.width *
-                                                        0.025,
+                                                        0.03,
                                                     fontWeight: FontWeight.bold,
                                                     color: Colors.white,
-                                                    fontFamily: 'monospace',
                                                     letterSpacing: 2,
                                                   ),
                                                 ),
@@ -411,13 +409,12 @@ class _WelcomePageState extends State<WelcomePage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      const Text(
+                      Text(
                         'Space2Soil',
-                        style: TextStyle(
+                        style: GoogleFonts.vt323(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'monospace',
                         ),
                       ),
                     ],

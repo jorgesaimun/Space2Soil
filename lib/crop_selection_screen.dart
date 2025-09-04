@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'models/crop.dart';
 import 'widgets/crop_stats_panel.dart';
 import 'widgets/crop_display_widget.dart';

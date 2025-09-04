@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/crop.dart';
 
 class CropStatsPanel extends StatelessWidget {
@@ -50,11 +51,10 @@ class CropStatsPanel extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Text(
               'Stats for Crops',
-              style: TextStyle(
+              style: GoogleFonts.vt323(
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
-                fontFamily: 'monospace',
               ),
             ),
           ),
@@ -109,11 +109,10 @@ class CropStatsPanel extends StatelessWidget {
         children: [
           Text(
             'Notes:',
-            style: TextStyle(
+            style: GoogleFonts.vt323(
               fontSize: labelFontSize,
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontFamily: 'monospace',
             ),
           ),
           const SizedBox(width: 5),
@@ -121,10 +120,9 @@ class CropStatsPanel extends StatelessWidget {
             child: SingleChildScrollView(
               child: Text(
                 currentCrop.notes,
-                style: TextStyle(
+                style: GoogleFonts.vt323(
                   fontSize: textFontSize,
                   color: const Color(0xFFD84315),
-                  fontFamily: 'monospace',
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -154,20 +152,18 @@ class CropStatsPanel extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: GoogleFonts.vt323(
               fontSize: labelFontSize,
               fontWeight: FontWeight.bold,
               color: Colors.black,
-              fontFamily: 'monospace',
             ),
           ),
           const SizedBox(width: 5),
           Text(
             value,
-            style: TextStyle(
+            style: GoogleFonts.vt323(
               fontSize: textFontSize,
               color: const Color(0xFFD84315),
-              fontFamily: 'monospace',
               fontWeight: FontWeight.w600,
             ),
           ),
