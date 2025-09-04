@@ -12,7 +12,7 @@ class HelpScreen extends StatelessWidget {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/bg1.png'),
+            image: AssetImage('assets/images/background_img.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -20,7 +20,7 @@ class HelpScreen extends StatelessWidget {
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.9,
-              height: MediaQuery.of(context).size.height * 0.75,
+              height: MediaQuery.of(context).size.height * 0.8,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -28,7 +28,7 @@ class HelpScreen extends StatelessWidget {
                 children: [
                   // Main wooden dialog background
                   Container(
-                    margin: const EdgeInsets.only(top: 25),
+                    margin: const EdgeInsets.only(top: 25, bottom: 25),
                     decoration: BoxDecoration(
                       color: const Color(0xFF8B4513), // Wood brown
                       borderRadius: BorderRadius.circular(20),
@@ -46,47 +46,56 @@ class HelpScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        const SizedBox(height: 60), // Space for header
+                        const SizedBox(height: 30), // Reduced space for header
                         // Help content
                         Expanded(
                           child: SingleChildScrollView(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 25,
-                              vertical: 15,
+                              vertical: 15, // Reduced padding
                             ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Game Instructions
-                                _buildHelpSection(
-                                  'How to Play',
-                                  'Welcome to Space2Soil! This game uses real NASA data to help you learn about soil and agriculture.',
-                                ),
-                                const SizedBox(height: 20),
-
-                                _buildHelpSection(
-                                  'Location Access',
-                                  'We need your location to provide accurate NASA soil and weather data for your specific area.',
-                                ),
-                                const SizedBox(height: 20),
-
-                                _buildHelpSection(
-                                  'Game Features',
-                                  '• Plant and grow different crops\n• Learn about soil composition\n• Use real NASA satellite data\n• Explore agricultural science',
-                                ),
-                                const SizedBox(height: 20),
-
-                                _buildHelpSection(
-                                  'Controls',
-                                  '• Tap to interact with objects\n• Use settings to adjust sound and graphics\n• Navigate with on-screen buttons',
+                                // Description text
+                                Text(
+                                  'To provide accurate farming insights, Space2Soil uses your device\'s location to access NASA\'s climate and soil data specific to your region. Granting permission ensures that the game can simulate real conditions for your crops. Without location access, certain features may not work properly.',
+                                  style: GoogleFonts.vt323(
+                                    fontSize: 18, // Slightly smaller font
+                                    color: Colors.black,
+                                    height: 1.3, // Reduced line height
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
 
-                                const SizedBox(height: 30),
+                                const SizedBox(height: 15), // Reduced spacing
+                                // Buttons row - wrap for better responsiveness
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  alignment: WrapAlignment.center,
+                                  children: [
+                                    _buildMenuButton('FAQ'),
+                                    _buildMenuButton('PRIVACY POLICY'),
+                                    _buildMenuButton('CONTACT'),
+                                    _buildMenuButton('CREDITS'),
+                                  ],
+                                ),
 
-                                // Back button
-                                Center(child: _buildBackButton(context)),
+                                const SizedBox(
+                                  height: 10,
+                                ), // Fixed spacing instead of Spacer
+                                // Version text
+                                Text(
+                                  'version 1.0.1',
+                                  style: GoogleFonts.vt323(
+                                    fontSize: 14,
+                                    color: Colors.black54,
+                                  ),
+                                ),
 
-                                const SizedBox(height: 10),
+                                const SizedBox(
+                                  height: 15,
+                                ), // Reduced bottom spacing
                               ],
                             ),
                           ),
@@ -103,11 +112,11 @@ class HelpScreen extends StatelessWidget {
                     child: Center(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 12,
+                          horizontal: 20,
+                          vertical: 8,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFFFD700), // Golden yellow
+                          color: const Color(0xFFD4A574), // Golden yellow
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
                             color: const Color(0xFFFF8C00),
@@ -133,6 +142,13 @@ class HelpScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
+                  // Back button positioned at bottom right
+                  Positioned(
+                    bottom: 0,
+                    right: 50,
+                    child: _buildBackButton(context),
+                  ),
                 ],
               ),
             ),
@@ -142,35 +158,41 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHelpSection(String title, String content) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: const Color(0xFFD4A574), // Light wood
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF8B4513), width: 2),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
+  Widget _buildMenuButton(String text) {
+    return GestureDetector(
+      onTap: () {
+        // Handle button tap - you can add navigation or functionality here
+        print('$text button pressed');
+      },
+      child: Container(
+        width: 110, // Slightly smaller width
+        height: 35, // Slightly smaller height
+        decoration: BoxDecoration(
+          color: const Color(0xFFD4A574), // Light wood color
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: const Color(0xFF8B4513), // Darker brown border
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            text,
             style: GoogleFonts.vt323(
-              fontSize: 18,
+              fontSize: 12, // Slightly smaller font
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
+            textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: GoogleFonts.vt323(
-              fontSize: 14,
-              color: Colors.black,
-              height: 1.4,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -180,7 +202,7 @@ class HelpScreen extends StatelessWidget {
       onTap: () => Navigator.pop(context),
       child: Container(
         width: 100,
-        height: 40,
+        height: 60,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
@@ -199,9 +221,9 @@ class HelpScreen extends StatelessWidget {
           child: Text(
             'BACK',
             style: GoogleFonts.vt323(
-              fontSize: 18,
+              fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.white,
+              color: Colors.black,
               letterSpacing: 1,
             ),
           ),

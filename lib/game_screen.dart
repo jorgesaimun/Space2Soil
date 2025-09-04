@@ -178,17 +178,12 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 
-  /// Background gradient decoration
+  /// Background image decoration
   BoxDecoration _buildBackgroundGradient() {
     return const BoxDecoration(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFFFFB347), // Orange
-          Color(0xFF87CEEB), // Sky blue
-          Color(0xFF4682B4), // Steel blue
-        ],
+      image: DecorationImage(
+        image: AssetImage('assets/images/background_img.png'),
+        fit: BoxFit.cover,
       ),
     );
   }
