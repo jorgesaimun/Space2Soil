@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'models/crop.dart';
 import 'widgets/crop_stats_panel.dart';
 import 'widgets/crop_display_widget.dart';
+import 'cultivation_screen.dart';
 
 class CropSelectionScreen extends StatefulWidget {
   const CropSelectionScreen({super.key});
@@ -22,13 +22,12 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
 
   void _onStartPressed() {
     final currentCrop = CropData.crops[_currentCropIndex];
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Starting with ${currentCrop.name}!'),
-        backgroundColor: const Color(0xFF4CAF50),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CultivationScreen(selectedCrop: currentCrop),
       ),
     );
-    // TODO: Navigate to game screen or implement start functionality
   }
 
   @override
