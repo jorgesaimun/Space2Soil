@@ -13,7 +13,7 @@ class SeedPanelWidget extends StatelessWidget {
         // Main content box
         Container(
           width: 250, // Wider panel
-          height: 180, // Taller panel
+          height: 170, // Taller panel
           decoration: _buildPanelDecoration(),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
