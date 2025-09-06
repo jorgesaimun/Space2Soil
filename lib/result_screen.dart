@@ -1,0 +1,108 @@
+import 'package:flutter/material.dart';
+import 'models/crop.dart';
+import 'widgets/cultivation_widgets/calendar_widget.dart';
+import 'widgets/result_widgets/farmer_result_widget.dart';
+import 'widgets/result_widgets/results_panel_widget.dart';
+import 'widgets/result_widgets/next_button_widget.dart';
+
+class ResultScreen extends StatefulWidget {
+  final Crop selectedCrop;
+  final double irrigationLevel;
+  final double fertilizerLevel;
+  final double pesticideLevel;
+
+  const ResultScreen({
+    super.key,
+    required this.selectedCrop,
+    required this.irrigationLevel,
+    required this.fertilizerLevel,
+    required this.pesticideLevel,
+  });
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  // Calendar data
+  String _currentMonth = 'FEB';
+  String _monthNumber = '01';
+
+  // Result data
+  String _whatHappened = 'Successfully ripe';
+  String _why = 'Perfect Irrigation';
+  int _starRating = 2; // 2 out of 3 stars
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/result_bg.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              children: [
+                // Left column: Calendar and Farmer
+                _buildLeftColumn(),
+                const SizedBox(width: 20),
+                // Right column: Results panel and Next button
+                _buildRightColumn(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeftColumn() {
+    return Expanded(
+      flex: 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top Left: Calendar widget
+          CalendarWidget(
+            currentMonth: _currentMonth,
+            monthNumber: _monthNumber,
+          ),
+          const Spacer(),
+          // Left Middle-Bottom: Farmer with speech bubble
+          FarmerResultWidget(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRightColumn() {
+    return Expanded(
+      flex: 1,
+      child: Column(
+        children: [
+          // Right Center: Results panel
+          ResultsPanelWidget(
+            whatHappened: _whatHappened,
+            why: _why,
+            starRating: _starRating,
+          ),
+          const Spacer(),
+          // Bottom Right: Next button
+          NextButtonWidget(
+            onPressed: () {
+              // Navigate back to crop selection or main menu
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,0 +1,6 @@
+import 'package:flutter/material.dart';
+
+// Create new images for the action buttons
+// assets/images/irrigate_icon.png
+// assets/images/fertilize_icon.png
+// assets/images/pesticide_icon.png

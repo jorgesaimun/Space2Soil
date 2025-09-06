@@ -16,97 +16,94 @@ class EnvironmentalDataWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Temperature panel
-        _buildEnvironmentalPanel(
-          'TEMPERATURE',
-          Icons.thermostat,
-          '${temperature.toInt()}°C',
-          Colors.red,
+        _buildDataCard(
+          title: 'TEMPERATURE',
+          icon: const Icon(Icons.thermostat, color: Colors.red, size: 40),
+          value: '${temperature.toInt()}°C',
         ),
-        const SizedBox(height: 12),
-        // Humidity panel
-        _buildEnvironmentalPanel(
-          'HUMIDITY',
-          Icons.water_drop,
-          '${humidity.toInt()}%',
-          Colors.blue,
+        const SizedBox(height: 15),
+        _buildDataCard(
+          title: 'HUMIDITY',
+          icon: const Icon(Icons.water_drop, color: Colors.blue, size: 40),
+          value: '${humidity.toInt()}%',
         ),
-        const SizedBox(height: 12),
-        // NDTI panel
-        _buildEnvironmentalPanel(
-          'NDTI',
-          Icons.check_circle,
-          ndti,
-          Colors.green,
+        const SizedBox(height: 15),
+        _buildDataCard(
+          title: 'NDTI',
+          icon: const Icon(Icons.check, color: Colors.green, size: 40),
+          value: ndti,
         ),
       ],
     );
   }
 
-  Widget _buildEnvironmentalPanel(
-    String title,
-    IconData icon,
-    String value,
-    Color iconColor,
-  ) {
-    return Container(
-      width: 140,
-      height: 60,
-      padding: const EdgeInsets.all(8),
-      decoration: _buildPanelDecoration(),
-      child: Column(
-        children: [
-          // Title banner
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 4),
+  Widget _buildDataCard({
+    required String title,
+    required Widget icon,
+    required String value,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        // Main content box
+        Container(
+          width: 120,
+          height: 65,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5EFE4),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: const Color(0xFFE65100), width: 3),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                icon,
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      value,
+                      style: GoogleFonts.vt323(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        // Title banner
+        Positioned(
+          top: -10,
+          right: 12,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF8A50),
-              borderRadius: BorderRadius.circular(4),
+              color: const Color(0xFFFFD180),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFF795548), width: 2),
             ),
             child: Text(
               title,
-              textAlign: TextAlign.center,
               style: GoogleFonts.vt323(
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ),
-          const SizedBox(height: 4),
-          // Icon and value
-          Row(
-            children: [
-              Icon(
-                icon,
-                color: iconColor,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  value,
-                  style: GoogleFonts.vt323(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  BoxDecoration _buildPanelDecoration() {
-    return BoxDecoration(
-      color: const Color(0xFFFFE0B2),
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: const Color(0xFFFF8A50), width: 3),
+        ),
+      ],
     );
   }
 }

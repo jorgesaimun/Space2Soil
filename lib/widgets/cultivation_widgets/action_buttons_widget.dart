@@ -22,85 +22,112 @@ class ActionButtonsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildActionButton(
-          'Irrigate',
-          Icons.water_drop,
-          irrigationLevel,
-          onIrrigationChanged,
+        _buildActionControl(
+          title: 'Irrigate',
+          imagePath: 'assets/images/irrigate_icon.png',
+          value: irrigationLevel,
+          onChanged: onIrrigationChanged,
         ),
-        _buildActionButton(
-          'Fertilize',
-          Icons.eco,
-          fertilizerLevel,
-          onFertilizerChanged,
+        _buildActionControl(
+          title: 'Fertilize',
+          imagePath: 'assets/images/fertilize_icon.png',
+          value: fertilizerLevel,
+          onChanged: onFertilizerChanged,
         ),
-        _buildActionButton(
-          'Pesticide',
-          Icons.bug_report,
-          pesticideLevel,
-          onPesticideChanged,
+        _buildActionControl(
+          title: 'Pesticide',
+          imagePath: 'assets/images/pesticide_icon.png',
+          value: pesticideLevel,
+          onChanged: onPesticideChanged,
         ),
       ],
     );
   }
 
-  Widget _buildActionButton(
-    String title,
-    IconData icon,
-    double value,
-    Function(double) onChanged,
-  ) {
+  Widget _buildActionControl({
+    required String title,
+    required String imagePath,
+    required double value,
+    required Function(double) onChanged,
+  }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // Action button
-        Container(
-          width: 80,
-          height: 60,
-          padding: const EdgeInsets.all(8),
-          decoration: _buildPanelDecoration(),
-          child: Column(
-            children: [
-              Icon(
-                icon,
-                size: 24,
-                color: Colors.black,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                title,
-                style: GoogleFonts.vt323(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+        Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: _buildPanelDecoration(),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.contain,
+                  errorBuilder:
+                      (context, error, stackTrace) =>
+                          const Icon(Icons.image_not_supported, size: 40),
                 ),
               ),
-            ],
-          ),
+            ),
+            Positioned(top: -10, child: _buildTitleBanner(title)),
+          ],
         ),
-        const SizedBox(height: 8),
-        // Slider bar
+        const SizedBox(height: 15),
         SizedBox(
-          width: 80,
-          child: Slider(
-            value: value,
-            onChanged: onChanged,
-            activeColor: const Color(0xFFFF8A50),
-            inactiveColor: const Color(0xFFFFE0B2),
-            min: 0.0,
-            max: 1.0,
+          width: 110,
+          child: SliderTheme(
+            data: SliderThemeData(
+              trackHeight: 12,
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+              overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+              activeTrackColor: const Color(0xFF4CAF50),
+              inactiveTrackColor: const Color(0xFFC8E6C9),
+              thumbColor: const Color(0xFF1B5E20),
+            ),
+            child: Slider(value: value, onChanged: onChanged),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildTitleBanner(String title) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFD180),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: const Color(0xFF795548), width: 2),
+      ),
+      child: Text(
+        title,
+        style: GoogleFonts.vt323(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 
   BoxDecoration _buildPanelDecoration() {
     return BoxDecoration(
-      color: const Color(0xFFFFE0B2),
-      borderRadius: BorderRadius.circular(8),
-      border: Border.all(color: const Color(0xFFFF8A50), width: 3),
+      color: const Color(0xFFF5EFE4),
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: const Color(0xFF795548), width: 4),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.25),
+          blurRadius: 0,
+          offset: const Offset(0, 4),
+        ),
+      ],
     );
   }
 }

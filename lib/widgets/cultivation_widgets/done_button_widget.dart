@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../result_screen.dart';
+import '../../models/crop.dart';
 
 class DoneButtonWidget extends StatelessWidget {
   final String cropName;
-  final VoidCallback onPressed;
+  final Crop selectedCrop;
+  final double irrigationLevel;
+  final double fertilizerLevel;
+  final double pesticideLevel;
 
   const DoneButtonWidget({
     super.key,
     required this.cropName,
-    required this.onPressed,
+    required this.selectedCrop,
+    required this.irrigationLevel,
+    required this.fertilizerLevel,
+    required this.pesticideLevel,
   });
 
   @override
@@ -28,14 +36,18 @@ class DoneButtonWidget extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(30),
           onTap: () {
-            // Show success message
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Cultivation settings saved for $cropName!'),
-                backgroundColor: const Color(0xFF4CAF50),
+            // Navigate to result screen
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ResultScreen(
+                  selectedCrop: selectedCrop,
+                  irrigationLevel: irrigationLevel,
+                  fertilizerLevel: fertilizerLevel,
+                  pesticideLevel: pesticideLevel,
+                ),
               ),
             );
-            onPressed();
           },
           child: Center(
             child: Text(

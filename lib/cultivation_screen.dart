@@ -10,10 +10,7 @@ import 'widgets/cultivation_widgets/done_button_widget.dart';
 class CultivationScreen extends StatefulWidget {
   final Crop selectedCrop;
 
-  const CultivationScreen({
-    super.key,
-    required this.selectedCrop,
-  });
+  const CultivationScreen({super.key, required this.selectedCrop});
 
   @override
   State<CultivationScreen> createState() => _CultivationScreenState();
@@ -53,10 +50,10 @@ class _CultivationScreenState extends State<CultivationScreen> {
               children: [
                 // Left column: Calendar, Speech bubble, Farmer
                 _buildLeftColumn(),
-                const SizedBox(width: 20),
+                const SizedBox(width: 10),
                 // Center column: Seed image, Action buttons
                 _buildCenterColumn(),
-                const SizedBox(width: 20),
+                const SizedBox(width: 10),
                 // Right column: Environmental data, Done button
                 _buildRightColumn(),
               ],
@@ -69,7 +66,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
 
   Widget _buildLeftColumn() {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,39 +78,40 @@ class _CultivationScreenState extends State<CultivationScreen> {
           const SizedBox(height: 20),
           // Left Middle: Speech bubble
           FarmerSectionWidget(cropName: widget.selectedCrop.name),
-          const Spacer(),
         ],
       ),
     );
   }
 
-
   Widget _buildCenterColumn() {
     return Expanded(
-      flex: 1,
+      flex: 3,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Center Top: Large seed image
           const SeedPanelWidget(),
-          const Spacer(),
+          const SizedBox(height: 20),
           // Center Bottom: Three action buttons
           ActionButtonsWidget(
             irrigationLevel: _irrigationLevel,
             fertilizerLevel: _fertilizerLevel,
             pesticideLevel: _pesticideLevel,
-            onIrrigationChanged: (value) => setState(() => _irrigationLevel = value),
-            onFertilizerChanged: (value) => setState(() => _fertilizerLevel = value),
-            onPesticideChanged: (value) => setState(() => _pesticideLevel = value),
+            onIrrigationChanged:
+                (value) => setState(() => _irrigationLevel = value),
+            onFertilizerChanged:
+                (value) => setState(() => _fertilizerLevel = value),
+            onPesticideChanged:
+                (value) => setState(() => _pesticideLevel = value),
           ),
         ],
       ),
     );
   }
 
-
   Widget _buildRightColumn() {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Column(
         children: [
           // Right Top to Middle: Environmental data widgets
@@ -126,11 +124,13 @@ class _CultivationScreenState extends State<CultivationScreen> {
           // Right Bottom: Large Done button
           DoneButtonWidget(
             cropName: widget.selectedCrop.name,
-            onPressed: () => Navigator.pop(context),
+            selectedCrop: widget.selectedCrop,
+            irrigationLevel: _irrigationLevel,
+            fertilizerLevel: _fertilizerLevel,
+            pesticideLevel: _pesticideLevel,
           ),
         ],
       ),
     );
   }
-
 }
