@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'models/crop.dart';
 import 'widgets/cultivation_widgets/calendar_widget.dart';
 import 'widgets/result_widgets/farmer_result_widget.dart';
 import 'widgets/result_widgets/results_panel_widget.dart';
-import 'widgets/result_widgets/next_button_widget.dart';
 
 class ResultScreen extends StatefulWidget {
   final Crop selectedCrop;
@@ -74,9 +74,14 @@ class _ResultScreenState extends State<ResultScreen> {
             currentMonth: _currentMonth,
             monthNumber: _monthNumber,
           ),
-          const Spacer(),
-          // Left Middle-Bottom: Farmer with speech bubble
-          FarmerResultWidget(),
+          const SizedBox(height: 40),
+          // Left Bottom: Farmer with speech bubble
+          const Expanded(
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: FarmerResultWidget(),
+            ),
+          ),
         ],
       ),
     );
@@ -86,22 +91,54 @@ class _ResultScreenState extends State<ResultScreen> {
     return Expanded(
       flex: 1,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Right Center: Results panel
+          // Right Center: Results panel without integrated Next button
           ResultsPanelWidget(
             whatHappened: _whatHappened,
             why: _why,
             starRating: _starRating,
           ),
-          const Spacer(),
-          // Bottom Right: Next button
-          NextButtonWidget(
-            onPressed: () {
-              // Navigate back to crop selection or main menu
-              Navigator.popUntil(context, (route) => route.isFirst);
-            },
-          ),
+          const SizedBox(height: 20),
+          // Next button positioned below results panel
+          _buildNextButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return GestureDetector(
+      onTap: () {
+        // Navigate back to crop selection or main menu
+        Navigator.popUntil(context, (route) => route.isFirst);
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: Colors.black, width: 3),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 6,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Text(
+          'NEXT',
+          style: GoogleFonts.vt323(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
       ),
     );
   }
