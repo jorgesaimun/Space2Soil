@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:demo_game/audio_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -15,6 +16,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String _selectedLanguage = 'EN';
 
   final List<String> _languages = ['EN', 'ES', 'FR', 'DE', 'IT', 'PT'];
+
+  @override
+  void initState() {
+    super.initState();
+    // Pull current volumes from AudioManager so the sliders reflect persisted values
+    _musicVolume = AudioManager.instance.musicVolume;
+    _soundEffectsVolume = AudioManager.instance.sfxVolume;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +82,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   icon: Icons.music_note,
                                   label: 'MUSIC',
                                   value: _musicVolume,
-                                  onChanged:
-                                      (value) =>
-                                          setState(() => _musicVolume = value),
+                                  onChanged: (value) async {
+                                    setState(() => _musicVolume = value);
+                                    // Apply immediately and persist
+                                    await AudioManager.instance
+                                        .setMusicVolume(value);
+                                  },
                                 ),
                                 const SizedBox(height: 5),
 
@@ -84,10 +96,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   icon: Icons.volume_up,
                                   label: 'SOUND EFFECTS',
                                   value: _soundEffectsVolume,
-                                  onChanged:
-                                      (value) => setState(
-                                        () => _soundEffectsVolume = value,
-                                      ),
+                                  onChanged: (value) async {
+                                    setState(() =>
+                                        _soundEffectsVolume = value);
+                                    // Apply immediately and persist
+                                    await AudioManager.instance
+                                        .setSfxVolume(value);
+                                  },
                                 ),
                                 const SizedBox(height: 5),
 
@@ -378,4 +393,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+
+
 }

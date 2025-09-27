@@ -1,4 +1,5 @@
 import 'package:demo_game/welcome_page.dart';
+import 'package:demo_game/audio_manager.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,6 +13,17 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Start both audio files after a short delay to ensure app is fully loaded
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      // Start background music (game_music.mp3) - looped
+      await AudioManager.instance
+          .playBackgroundMusic(assetPath: 'assets/audios/game_music.mp3');
+      
+      // Start sound effect (music.mp3) - also looped so it plays continuously
+      await AudioManager.instance
+          .playSfx(assetPath: 'assets/audios/music.mp3', loop: true);
+    });
 
     // Navigate to welcome page after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
