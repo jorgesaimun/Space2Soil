@@ -4,6 +4,7 @@ import 'models/crop.dart';
 import 'widgets/cultivation_widgets/calendar_widget.dart';
 import 'widgets/result_widgets/farmer_result_widget.dart';
 import 'widgets/result_widgets/results_panel_widget.dart';
+import 'mode_selection_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final Crop selectedCrop;
@@ -110,8 +111,13 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget _buildNextButton() {
     return GestureDetector(
       onTap: () {
-        // Navigate back to crop selection or main menu
-        Navigator.popUntil(context, (route) => route.isFirst);
+        // Navigate to mode selection screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ModeSelectionScreen(),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
