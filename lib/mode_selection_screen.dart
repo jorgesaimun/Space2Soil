@@ -26,103 +26,98 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           ),
         ),
         child: SafeArea(
-          child: Center(
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.7,
-              decoration: BoxDecoration(
-                color: const Color(0xFF8B4513), // Wood brown
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: const Color(0xFFD4A574),
-                  width: 3,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.4),
-                    blurRadius: 15,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Title
-                    Text(
-                      'SELECT MODE',
-                      style: GoogleFonts.vt323(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFFD4A574),
-                        letterSpacing: 2,
+          child: Stack(
+            children: [
+              // Main content container
+              Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF8B4513), // Wood brown
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0xFFD4A574),
+                      width: 3,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.4),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    
-                    // Mode buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Sandbox Mode Button
-                        _buildModeButton(
-                          title: 'SANDBOX',
-                          subtitle: 'Free Play',
-                          icon: Icons.play_circle_outline,
-                          gradientColors: const [
-                            Color(0xFF4CAF50),
-                            Color(0xFF2E7D32),
-                          ],
-                          onTap: () {
-                            _navigateToMode('sandbox');
-                          },
-                        ),
-                        
-                        // Classic Mode Button
-                        _buildModeButton(
-                          title: 'CLASSIC',
-                          subtitle: 'Challenge',
-                          icon: Icons.star,
-                          gradientColors: const [
-                            Color(0xFFFF9800),
-                            Color(0xFFE65100),
-                          ],
-                          onTap: () {
-                            _navigateToMode('classic');
-                          },
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: 30),
-                    
-                    // Camera button with label
-                    Column(
-                      children: [
+                        // Title
                         Text(
-                          'TAKE PHOTO',
+                          'SELECT MODE',
                           style: GoogleFonts.vt323(
-                            fontSize: 18,
+                            fontSize: 32,
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFFD4A574),
-                            letterSpacing: 1,
+                            letterSpacing: 2,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        _buildCameraButton(),
+                        const SizedBox(height: 30),
+                        
+                        // Mode buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            // Sandbox Mode Button
+                            _buildModeButton(
+                              title: 'SANDBOX',
+                              subtitle: 'Free Play',
+                              icon: Icons.play_circle_outline,
+                              gradientColors: const [
+                                Color(0xFF4CAF50),
+                                Color(0xFF2E7D32),
+                              ],
+                              onTap: () {
+                                _navigateToMode('sandbox');
+                              },
+                            ),
+                            
+                            // Classic Mode Button
+                            _buildModeButton(
+                              title: 'CLASSIC',
+                              subtitle: 'Challenge',
+                              icon: Icons.star,
+                              gradientColors: const [
+                                Color(0xFFFF9800),
+                                Color(0xFFE65100),
+                              ],
+                              onTap: () {
+                                _navigateToMode('classic');
+                              },
+                            ),
+                          ],
+                        ),
                       ],
                     ),
-                    
-                    const SizedBox(height: 20),
-                    
-                    // Back button
-                    _buildBackButton(),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              
+              // Camera icon at top left corner
+              Positioned(
+                top: 20,
+                left: 20,
+                child: _buildCameraButton(),
+              ),
+              
+              // Back button at bottom left corner
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: _buildBackButton(),
+              ),
+            ],
           ),
         ),
       ),
@@ -193,25 +188,25 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     return GestureDetector(
       onTap: _openCamera,
       child: Container(
-        width: 120,
-        height: 120,
+        width: 60,
+        height: 60,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
           ),
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 5),
+          border: Border.all(color: Colors.white, width: 3),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.6),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: const Icon(
           Icons.camera_alt,
-          size: 60,
+          size: 30,
           color: Colors.white,
         ),
       ),
@@ -282,10 +277,15 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   Future<void> _openCamera() async {
     try {
+      print('Camera button tapped - starting camera process...');
+      
       // Request camera permission
+      print('Requesting camera permission...');
       final status = await Permission.camera.request();
+      print('Camera permission status: $status');
       
       if (status.isGranted) {
+        print('Camera permission granted - opening camera...');
         // Open camera
         final XFile? image = await _picker.pickImage(
           source: ImageSource.camera,
@@ -293,6 +293,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
         );
         
         if (image != null) {
+          print('Image captured successfully: ${image.path}');
           // Show success message
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -309,8 +310,11 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           
           // TODO: Process the captured image later
           print('Image captured: ${image.path}');
+        } else {
+          print('No image captured - user cancelled or error occurred');
         }
       } else {
+        print('Camera permission denied: $status');
         // Show permission denied message
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -326,6 +330,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
         }
       }
     } catch (e) {
+      print('Camera error: $e');
       // Show error message
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
