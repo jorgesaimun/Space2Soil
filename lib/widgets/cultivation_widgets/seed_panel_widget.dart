@@ -1,34 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'stage_image_widget.dart';
 
 class SeedPanelWidget extends StatelessWidget {
-  const SeedPanelWidget({super.key});
+  final String stageLabel;
+  final int currentStage;
+
+  const SeedPanelWidget({
+    super.key,
+    required this.stageLabel,
+    required this.currentStage,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      alignment: Alignment.center,
-      children: [
-        // Main content box
-        Container(
-          width: 250, // Wider panel
-          height: 160, // Taller panel
-          decoration: _buildPanelDecoration(),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Image.asset(
-              'assets/images/seed_img.png',
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.grass, size: 80, color: Colors.brown);
-              },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate responsive dimensions
+        final maxWidth =
+            constraints.maxWidth > 0 ? constraints.maxWidth * 0.9 : 200.0;
+        final maxHeight =
+            constraints.maxHeight > 0 ? constraints.maxHeight * 0.8 : 120.0;
+
+        return Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            // Main content box
+            Container(
+              width: maxWidth.clamp(180.0, 240.0).toDouble(),
+              height: maxHeight.clamp(100.0, 160.0).toDouble(),
+              decoration: _buildPanelDecoration(),
+              child: Column(
+                children: [
+                  // Stage progress indicator
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(6, (index) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 1.5),
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            color:
+                                index < currentStage
+                                    ? const Color(0xFF4CAF50)
+                                    : Colors.grey.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  // Stage image - taking most of the space
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: StageImageWidget(
+                          currentStage: currentStage,
+                          cropType: 'tomato',
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-        // Title banner
-        Positioned(top: -10, child: _buildSeedBanner()),
-      ],
+            // Title banner
+            Positioned(top: -10, child: _buildSeedBanner()),
+          ],
+        );
+      },
     );
   }
 
@@ -41,7 +87,7 @@ class SeedPanelWidget extends StatelessWidget {
         border: Border.all(color: const Color(0xFF795548), width: 2),
       ),
       child: Text(
-        'SEED',
+        stageLabel,
         style: GoogleFonts.vt323(
           fontSize: 16,
           fontWeight: FontWeight.bold,

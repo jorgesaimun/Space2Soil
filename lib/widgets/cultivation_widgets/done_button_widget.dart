@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../result_screen.dart';
+import '../../cloud_animation.dart';
 import '../../models/crop.dart';
 
 class DoneButtonWidget extends StatelessWidget {
@@ -9,6 +9,8 @@ class DoneButtonWidget extends StatelessWidget {
   final double irrigationLevel;
   final double fertilizerLevel;
   final double pesticideLevel;
+  final int currentStage;
+  final VoidCallback onStageAdvance;
 
   const DoneButtonWidget({
     super.key,
@@ -17,6 +19,8 @@ class DoneButtonWidget extends StatelessWidget {
     required this.irrigationLevel,
     required this.fertilizerLevel,
     required this.pesticideLevel,
+    required this.currentStage,
+    required this.onStageAdvance,
   });
 
   @override
@@ -36,16 +40,19 @@ class DoneButtonWidget extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(30),
           onTap: () {
-            // Navigate to result screen
+            // Navigate to cloud animation screen first
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ResultScreen(
-                  selectedCrop: selectedCrop,
-                  irrigationLevel: irrigationLevel,
-                  fertilizerLevel: fertilizerLevel,
-                  pesticideLevel: pesticideLevel,
-                ),
+                builder:
+                    (context) => CloudAnimationScreen(
+                      selectedCrop: selectedCrop,
+                      irrigationLevel: irrigationLevel,
+                      fertilizerLevel: fertilizerLevel,
+                      pesticideLevel: pesticideLevel,
+                      currentStage: currentStage,
+                      onStageAdvance: onStageAdvance,
+                    ),
               ),
             );
           },
