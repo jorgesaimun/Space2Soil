@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models/crop.dart';
+import 'models/land.dart';
 import 'widgets/cultivation_widgets/calendar_widget.dart';
 import 'widgets/cultivation_widgets/farmer_section_widget.dart';
 import 'widgets/cultivation_widgets/seed_panel_widget.dart';
@@ -9,8 +10,13 @@ import 'widgets/cultivation_widgets/done_button_widget.dart';
 
 class CultivationScreen extends StatefulWidget {
   final Crop selectedCrop;
+  final Land selectedLand;
 
-  const CultivationScreen({super.key, required this.selectedCrop});
+  const CultivationScreen({
+    super.key,
+    required this.selectedCrop,
+    required this.selectedLand,
+  });
 
   @override
   State<CultivationScreen> createState() => _CultivationScreenState();

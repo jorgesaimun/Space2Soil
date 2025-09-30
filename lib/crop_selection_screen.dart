@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'models/crop.dart';
 import 'widgets/crop_stats_panel.dart';
 import 'widgets/crop_display_widget.dart';
-import 'cultivation_screen.dart';
+import 'land_selection_screen.dart';
 
 class CropSelectionScreen extends StatefulWidget {
   const CropSelectionScreen({super.key});
@@ -25,7 +25,7 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CultivationScreen(selectedCrop: currentCrop),
+        builder: (context) => LandSelectionScreen(selectedCrop: currentCrop),
       ),
     );
   }
