@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'webview_screen.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -74,10 +75,10 @@ class HelpScreen extends StatelessWidget {
                                   runSpacing: 8,
                                   alignment: WrapAlignment.center,
                                   children: [
-                                    _buildMenuButton('FAQ'),
-                                    _buildMenuButton('PRIVACY POLICY'),
-                                    _buildMenuButton('CONTACT'),
-                                    _buildMenuButton('CREDITS'),
+                                    _buildMenuButton('FAQ', context),
+                                    _buildMenuButton('PRIVACY POLICY', context),
+                                    _buildMenuButton('CONTACT', context),
+                                    _buildMenuButton('CREDITS', context),
                                   ],
                                 ),
 
@@ -158,11 +159,20 @@ class HelpScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMenuButton(String text) {
+  Widget _buildMenuButton(String text, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Handle button tap - you can add navigation or functionality here
-        print('$text button pressed');
+        // Navigate to webview screen with appropriate URL
+        String url = _getUrlForButton(text);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => WebViewScreen(
+              title: text,
+              url: url,
+            ),
+          ),
+        );
       },
       child: Container(
         width: 110, // Slightly smaller width
@@ -230,5 +240,21 @@ class HelpScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _getUrlForButton(String buttonText) {
+    // Placeholder URLs - replace with your actual Google Docs links
+    switch (buttonText) {
+      case 'FAQ':
+        return 'https://docs.google.com/document/d/your-faq-doc-id/edit';
+      case 'PRIVACY POLICY':
+        return 'https://docs.google.com/document/d/your-privacy-policy-doc-id/edit';
+      case 'CONTACT':
+        return 'https://docs.google.com/document/d/your-contact-doc-id/edit';
+      case 'CREDITS':
+        return 'https://docs.google.com/document/d/your-credits-doc-id/edit';
+      default:
+        return 'https://docs.google.com/document/d/your-default-doc-id/edit';
+    }
   }
 }
