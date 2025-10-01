@@ -167,10 +167,7 @@ class HelpScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => WebViewScreen(
-              title: text,
-              url: url,
-            ),
+            builder: (context) => WebViewScreen(title: text, url: url),
           ),
         );
       },
@@ -243,16 +240,16 @@ class HelpScreen extends StatelessWidget {
   }
 
   String _getUrlForButton(String buttonText) {
-    // Placeholder URLs - replace with your actual Google Docs links
+    // TODO: replace with actual Google Docs links
     switch (buttonText) {
       case 'FAQ':
-        return 'https://docs.google.com/document/d/your-faq-doc-id/edit';
+        return 'https://docs.google.com/document/d/1xqyg1WVdXz3F8L420c153BvMSiurDOnB3uHgdPWcmTk/edit?tab=t.0#heading=h.2hdc84oywkl7';
       case 'PRIVACY POLICY':
-        return 'https://docs.google.com/document/d/your-privacy-policy-doc-id/edit';
+        return 'https://docs.google.com/document/d/1xqyg1WVdXz3F8L420c153BvMSiurDOnB3uHgdPWcmTk/edit?usp=sharing';
       case 'CONTACT':
-        return 'https://docs.google.com/document/d/your-contact-doc-id/edit';
+        return 'https://docs.google.com/document/d/1xqyg1WVdXz3F8L420c153BvMSiurDOnB3uHgdPWcmTk/edit?tab=t.v7jmt2ywg6a9';
       case 'CREDITS':
-        return 'https://docs.google.com/document/d/your-credits-doc-id/edit';
+        return 'https://docs.google.com/document/d/1xqyg1WVdXz3F8L420c153BvMSiurDOnB3uHgdPWcmTk/edit?tab=t.wqh3bvb5wv6j';
       default:
         return 'https://docs.google.com/document/d/your-default-doc-id/edit';
     }

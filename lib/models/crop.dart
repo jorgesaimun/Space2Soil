@@ -66,31 +66,65 @@ class Crop {
         .trim();
   }
 
-  /// Get image path based on crop name
+  /// Get image path based on crop name using standardized format
   static String _getImagePathForCrop(String cropName) {
-    final cropImages = {
-      'tomato': 'assets/images/tomato_icon.png',
-      'potato': 'assets/images/potato.png',
-      'rice': 'assets/images/rice_image.png',
-      'wheat': 'assets/images/wheat/1.png',
-      'maize': 'assets/images/maize/1.png',
-      'jute': 'assets/images/jute/1.png',
-      'tea': 'assets/images/tea/1.png',
-      'banana': 'assets/images/banana/1.png',
-      'mango': 'assets/images/mango/1.png',
-      'lemon': 'assets/images/lemon/1.png',
-      'chili': 'assets/images/chili/1.png',
-      'lentil': 'assets/images/lentil/1.png',
-      'mustard': 'assets/images/mustard/1.png',
-      'cauliflower': 'assets/images/cauliflower/1.png',
-      'cabbage': 'assets/images/cabbage/1.png',
-      'brinjal': 'assets/images/brinjal_(_eggplant)/1.png',
-      'eggplant': 'assets/images/brinjal_(_eggplant)/1.png',
-      'watermelon': 'assets/images/watermelon/1.png',
-      'betel_leaf': 'assets/images/betel_leaf/1.png',
+    // Convert crop name to proper case for file name
+    final formattedName = _formatCropNameForFile(cropName);
+
+    // Return standardized path: assets/images/crops/{CropName}.jpeg
+    final imagePath = 'assets/images/crops/$formattedName.jpeg';
+    print('Generated image path for "$cropName": $imagePath');
+
+    return imagePath;
+  }
+
+  /// Format crop name for file path (capitalize first letter)
+  static String _formatCropNameForFile(String cropName) {
+    if (cropName.isEmpty) return cropName;
+
+    // Handle special cases and normalize the name
+    String normalized = cropName.toLowerCase().trim();
+
+    // Check for BRRI dhan patterns (BRRI dhan means rice)
+    if (normalized.contains('brri') && normalized.contains('dhan')) {
+      print('Detected BRRI dhan variety "$cropName" - mapping to Rice');
+      return 'Rice';
+    }
+
+    // Check for other rice variety patterns
+    if (normalized.contains('dhan') ||
+        normalized.startsWith('brri') ||
+        normalized.contains('rice variety')) {
+      print('Detected rice variety "$cropName" - mapping to Rice');
+      return 'Rice';
+    }
+
+    // Handle special crop name mappings if needed
+    final specialMappings = {
+      'chili': 'Chili',
+      'chilli': 'Chili',
+      'banana': 'Banana',
+      'rice': 'Rice',
+      'wheat': 'Wheat',
+      'maize': 'Maize',
+      'potato': 'Potato',
+      'tomato': 'Tomato',
+      'lentil': 'Lentil',
+      'mustard': 'Mustard',
+      'tea': 'Tea',
+      'jute': 'Jute',
+      'cabbage': 'Cabbage',
+      'cauliflower': 'Cauliflower',
+      'eggplant': 'Eggplant',
+      'brinjal': 'Eggplant', // Map brinjal to eggplant
+      'watermelon': 'Watermelon',
+      'mango': 'Mango',
+      'lemon': 'Lemon',
     };
 
-    return cropImages[cropName.toLowerCase()] ?? 'assets/images/seed_img.png';
+    // Use special mapping if available, otherwise capitalize first letter
+    return specialMappings[normalized] ??
+        cropName[0].toUpperCase() + cropName.substring(1).toLowerCase();
   }
 }
 

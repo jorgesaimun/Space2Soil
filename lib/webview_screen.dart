@@ -102,7 +102,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
                       child: Text(
                         widget.title,
                         style: GoogleFonts.vt323(
-                          fontSize: 20,
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 1,
@@ -116,7 +116,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               // WebView content
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 15),
+                  margin: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
