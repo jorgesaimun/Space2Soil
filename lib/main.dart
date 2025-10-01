@@ -1,5 +1,6 @@
 import 'package:demo_game/splash_screen.dart';
 import 'package:demo_game/audio_manager.dart';
+import 'package:demo_game/services/supabase_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,6 +15,9 @@ Future<void> main() async {
 
   // Initialize audio
   await AudioManager.instance.init();
+  
+  // Initialize Supabase
+  await SupabaseService.initialize();
 
   runApp(MyApp());
 }
@@ -37,6 +41,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     // Stop all audio when app is disposed
     AudioManager.instance.dispose();
+    // Dispose Supabase client
+    SupabaseService.dispose();
     super.dispose();
   }
 

@@ -27,19 +27,19 @@ class ActionButtonsWidget extends StatelessWidget {
       children: [
         _buildActionControl(
           title: 'Irrigate',
-          imagePath: 'assets/images/irrigate_icon.png',
+          imagePath: 'assets/images/irrigate2.png',
           value: irrigationLevel,
           onChanged: onIrrigationChanged,
         ),
         _buildActionControl(
           title: 'Fertilize',
-          imagePath: 'assets/images/fertilize_icon.png',
+          imagePath: 'assets/images/fertilize.png',
           value: fertilizerLevel,
           onChanged: onFertilizerChanged,
         ),
         _buildActionControl(
           title: 'Pesticide',
-          imagePath: 'assets/images/pesticide_icon.png',
+          imagePath: 'assets/images/pesticide.png',
           value: pesticideLevel,
           onChanged: onPesticideChanged,
         ),
@@ -71,13 +71,13 @@ class ActionButtonsWidget extends StatelessWidget {
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: Color(0xFFFFCC80),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0), // Reduced padding
+                  padding: const EdgeInsets.all(2.0), // Reduced padding
                   child: Image.asset(
                     imagePath,
-                    fit: BoxFit.contain,
+                    fit: BoxFit.cover,
                     errorBuilder:
                         (context, error, stackTrace) => const Icon(
                           Icons.image_not_supported,

@@ -124,15 +124,24 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
       if (placemarks.isNotEmpty) {
         Placemark place = placemarks[0];
-        String city =
-            place.locality ?? place.subAdministrativeArea ?? 'Unknown City';
-        String country = place.country ?? 'Unknown Country';
-        return '$city, $country';
+
+        // Try to get division/administrative area first (for Bangladesh divisions)
+        String? division = place.administrativeArea;
+        String? city = place.locality ?? place.subAdministrativeArea;
+
+        // If we have a division, use it; otherwise use city
+        String location = division ?? city ?? 'Unknown Location';
+
+        print(
+          'Location detected: $location (Division: $division, City: $city)',
+        );
+
+        return location;
       }
     } catch (e) {
-      // Geocoding failed, return generic message
+      print('Geocoding error: $e');
     }
-    return 'Location Found';
+    return 'Location Detection Failed';
   }
 
   /// Handle location error by setting fallback state
@@ -151,9 +160,9 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     }
 
     setState(() {
-      _locationStatus = 'Error getting precise location';
+      _locationStatus = 'Using approximate location';
       _isLoading = false;
-      _locationName = 'LOCATION FOUND';
+      _locationName = 'CHITTAGONG';
     });
     _dataController.forward();
   }
@@ -213,7 +222,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CropSelectionScreen(),
+                      builder:
+                          (context) => CropSelectionScreen(
+                            detectedLocation: _locationName,
+                          ),
                     ),
                   );
                 },

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:demo_game/game_screen.dart';
+import 'package:demo_game/location_screen.dart';
 import 'package:demo_game/settings_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';

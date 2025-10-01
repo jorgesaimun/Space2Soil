@@ -50,8 +50,8 @@ class EnvironmentalDataWidget extends StatelessWidget {
       children: [
         // Main content box
         Container(
-          width: 120,
-          height: 65,
+          width: 130,
+          height: 75,
           decoration: BoxDecoration(
             color: const Color(0xFFF5EFE4),
             borderRadius: BorderRadius.circular(12),

@@ -33,7 +33,7 @@ class LocationDataSection extends StatelessWidget {
   Widget _buildLocationDisplay() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFFFF8A50), Color(0xFFFFB74D)],
@@ -46,15 +46,15 @@ class LocationDataSection extends StatelessWidget {
           const Text(
             'Your Location is:',
             style: TextStyle(
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: Color(0xFF8B4513),
               fontFamily: 'monospace',
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: const Color(0xFFFFE0B2),
               borderRadius: BorderRadius.circular(8),
@@ -63,12 +63,12 @@ class LocationDataSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Icon(Icons.expand_more, color: Color(0xFF8B4513)),
-                const SizedBox(width: 10),
+                const SizedBox(width: 4),
                 Flexible(
                   child: Text(
                     locationName ?? 'LOCATION FOUND',
                     style: const TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF8B4513),
                       fontFamily: 'monospace',
@@ -140,7 +140,7 @@ class LocationDataSection extends StatelessWidget {
             padding: EdgeInsets.all(8.0),
             child: Image(
               image: AssetImage('assets/images/questins_icon.png'),
-             // color: Colors.white, // White color for the icon
+              // color: Colors.white, // White color for the icon
               fit: BoxFit.contain,
             ),
           ),
@@ -162,7 +162,7 @@ class LocationDataSection extends StatelessWidget {
           return Transform.scale(
             scale: 0.8 + (dataController.value * 0.2),
             child: Container(
-              height: 100,
+              height: 110,
               decoration: BoxDecoration(
                 color: const Color(0xFFFFE0B2),
                 borderRadius: BorderRadius.circular(10),

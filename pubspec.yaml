@@ -45,6 +45,7 @@ dependencies:
   camera: ^0.10.5+9
   image_picker: ^1.0.8
   webview_flutter: ^4.13.0
+  supabase_flutter: ^2.8.0
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,20 @@ flutter:
   assets:
     - assets/images/
     - assets/images/tomato/
+    - assets/images/potato/
+    - assets/images/rice/
+    - assets/images/lemon/
+    - assets/images/banana/
+    - assets/images/chili/
+    - assets/images/tea/
+    - assets/images/jute/
+    - assets/images/mango/
+    - assets/images/lentil/
+    - assets/images/wheat/
+    - assets/images/cabbage/
+    - assets/images/maize/
+    - assets/images/mustard/
+    
     - assets/audios/
 
   #   - images/a_dot_ham.jpeg

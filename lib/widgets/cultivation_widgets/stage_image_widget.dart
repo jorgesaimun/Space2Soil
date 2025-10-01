@@ -16,8 +16,24 @@ class StageImageWidget extends StatelessWidget {
   }
 
   Widget _buildImageWithFallback() {
-    // Primary image path
-    final primaryImage = 'assets/images/$cropType/stage$currentStage.png';
+    // Candidate filenames per stage (robust to different naming styles)
+    final List<String> candidates = [
+      'assets/images/$cropType/$currentStage.png',
+      'assets/images/$cropType/stage$currentStage.png',
+      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.png',
+      // .PNG
+      'assets/images/$cropType/$currentStage.PNG',
+      'assets/images/$cropType/stage$currentStage.PNG',
+      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.PNG',
+      // .jpg
+      'assets/images/$cropType/$currentStage.jpg',
+      'assets/images/$cropType/stage$currentStage.jpg',
+      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.jpg',
+      // .jpeg
+      'assets/images/$cropType/$currentStage.jpeg',
+      'assets/images/$cropType/stage$currentStage.jpeg',
+      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.jpeg',
+    ];
 
     // Fallback images based on stage
     final fallbackImage = _getFallbackImage();
@@ -25,26 +41,38 @@ class StageImageWidget extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      child: Image.asset(
-        primaryImage,
-        fit: BoxFit.cover, // Fill the entire container
-        errorBuilder: (context, error, stackTrace) {
-          // Try fallback image
-          return Image.asset(
-            fallbackImage,
-            fit: BoxFit.cover, // Fill the entire container
-            errorBuilder: (context, error2, stackTrace2) {
-              // Final fallback - show stage appropriate icon
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                child: _buildFinalFallback(),
-              );
-            },
-          );
-        },
-      ),
+      child: _buildChainedImages(candidates, fallbackImage),
     );
+  }
+
+  /// Builds a nested error-handling chain over candidate asset paths,
+  /// falling back to [fallbackImage] and finally to an icon.
+  Widget _buildChainedImages(List<String> candidates, String fallbackImage) {
+    Widget buildAt(int index) {
+      if (index >= candidates.length) {
+        return Image.asset(
+          fallbackImage,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error2, stackTrace2) {
+            return Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: _buildFinalFallback(),
+            );
+          },
+        );
+      }
+      final path = candidates[index];
+      return Image.asset(
+        path,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return buildAt(index + 1);
+        },
+      );
+    }
+
+    return buildAt(0);
   }
 
   String _getFallbackImage() {
