@@ -29,7 +29,7 @@ class DoneButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 120,
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],

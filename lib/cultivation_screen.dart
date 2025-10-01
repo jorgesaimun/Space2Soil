@@ -48,9 +48,21 @@ class _CultivationScreenState extends State<CultivationScreen> {
     _updateCalendarForStage();
   }
 
+  /// Normalize crop name to asset folder name
+  /// - Any name containing both "brri" and "dhan" maps to 'rice'
+  /// - Also normalize common aliases like 'brinjal' -> 'eggplant'
+  String _normalizeCropFolderName(String cropName) {
+    final normalized = cropName.toLowerCase().trim();
+    if (normalized.contains('brri') && normalized.contains('dhan')) {
+      return 'rice';
+    }
+    if (normalized == 'brinjal') return 'eggplant';
+    return normalized;
+  }
+
   /// Get total number of stages based on crop image count
   int _getTotalStagesForCrop() {
-    // Map crop names to their folder names
+    // Map normalized crop folder name to number of stage images
     final cropFolderMap = {
       'tomato': 7,
       'potato': 5,
@@ -73,8 +85,8 @@ class _CultivationScreenState extends State<CultivationScreen> {
       'wheat': 6,
     };
 
-    final cropName = widget.selectedCrop.name.toLowerCase();
-    return cropFolderMap[cropName] ?? 6; // Default to 6 if not found
+    final folderId = _normalizeCropFolderName(widget.selectedCrop.name);
+    return cropFolderMap[folderId] ?? 6; // Default to 6 if not found
   }
 
   /// Update calendar based on current stage
@@ -87,11 +99,16 @@ class _CultivationScreenState extends State<CultivationScreen> {
       _monthNumber = _currentStage.toString().padLeft(2, '0');
     } else if (_currentStage <= stagesPerMonth * 2) {
       _currentMonth = 'MAR';
-      _monthNumber = (_currentStage - stagesPerMonth).toString().padLeft(2, '0');
+      _monthNumber = (_currentStage - stagesPerMonth).toString().padLeft(
+        2,
+        '0',
+      );
     } else {
       _currentMonth = 'APR';
-      _monthNumber =
-          (_currentStage - (stagesPerMonth * 2)).toString().padLeft(2, '0');
+      _monthNumber = (_currentStage - (stagesPerMonth * 2)).toString().padLeft(
+        2,
+        '0',
+      );
     }
   }
 
@@ -152,7 +169,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
 
   Widget _buildLeftColumn() {
     return Expanded(
-      flex: 2,
+      flex: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -161,7 +178,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
             currentMonth: _currentMonth,
             monthNumber: _monthNumber,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           // Left Middle: Speech bubble
           FarmerSectionWidget(cropName: widget.selectedCrop.name),
         ],
@@ -171,7 +188,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
 
   Widget _buildCenterColumn() {
     return Expanded(
-      flex: 3,
+      flex: 4,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -181,7 +198,9 @@ class _CultivationScreenState extends State<CultivationScreen> {
               stageLabel: _getCurrentStageLabel(),
               currentStage: _currentStage,
               totalStages: _totalStages,
-              cropFolderName: widget.selectedCrop.name.toLowerCase(),
+              cropFolderName: _normalizeCropFolderName(
+                widget.selectedCrop.name,
+              ),
             ),
           ),
           const SizedBox(height: 20),

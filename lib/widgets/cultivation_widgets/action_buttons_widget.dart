@@ -58,7 +58,7 @@ class ActionButtonsWidget extends StatelessWidget {
       children: [
         // Main card with two sections
         Container(
-          width: 90, // Reduced from 110 to fit within constraints
+          width: 85, // Reduced from 110 to fit within constraints
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFE65100), width: 3),

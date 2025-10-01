@@ -22,7 +22,7 @@ class FarmerSectionWidget extends StatelessWidget {
 
   Widget _buildSpeechBubble() {
     return Container(
-      width: 190,
+      width: 220,
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Colors.white,
