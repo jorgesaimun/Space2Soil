@@ -13,9 +13,10 @@ class FarmerSectionWidget extends StatelessWidget {
       children: [
         // Speech bubble
         _buildSpeechBubble(),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         // Farmer character
         _buildFarmerCharacter(),
+        Spacer(),
       ],
     );
   }
@@ -23,16 +24,16 @@ class FarmerSectionWidget extends StatelessWidget {
   Widget _buildSpeechBubble() {
     return Container(
       width: 220,
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.black, width: 2),
       ),
       child: Text(
-        'Hello Welcome to Space2Soil, now here is your ${cropName.toLowerCase()} seed. Choose your action carefully',
+        'Welcome to Space2Soil, now here is your ${cropName.toLowerCase()} seed. Choose your action carefully',
         style: GoogleFonts.vt323(
-          fontSize: 14,
+          fontSize: 10,
           fontWeight: FontWeight.bold,
           color: Colors.black,
         ),
@@ -44,12 +45,12 @@ class FarmerSectionWidget extends StatelessWidget {
     return Image.asset(
       'assets/images/farmer_img.png',
       width: 125,
-      height: 120,
-      fit: BoxFit.contain,
+      height: 100,
+      fit: BoxFit.fill,
       errorBuilder: (context, error, stackTrace) {
         return Container(
           width: 120,
-          height: 120,
+          height: 100,
           decoration: BoxDecoration(
             color: const Color(0xFF8D6E63),
             borderRadius: BorderRadius.circular(8),

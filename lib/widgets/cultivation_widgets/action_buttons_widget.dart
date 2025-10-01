@@ -32,14 +32,14 @@ class ActionButtonsWidget extends StatelessWidget {
           onChanged: onIrrigationChanged,
         ),
         _buildActionControl(
-          title: 'Fertilize',
-          imagePath: 'assets/images/fertilize.png',
+          title: 'Fertilize', 
+          imagePath: 'assets/images/fertilizer.png', // Changed from fertilize2.png
           value: fertilizerLevel,
           onChanged: onFertilizerChanged,
         ),
         _buildActionControl(
           title: 'Pesticide',
-          imagePath: 'assets/images/pesticide.png',
+          imagePath: 'assets/images/pesticide.png', // Changed from pesticide2.png
           value: pesticideLevel,
           onChanged: onPesticideChanged,
         ),
@@ -58,7 +58,7 @@ class ActionButtonsWidget extends StatelessWidget {
       children: [
         // Main card with two sections
         Container(
-          width: 85, // Reduced from 110 to fit within constraints
+          width: 90, // Reduced from 110 to fit within constraints
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: const Color(0xFFE65100), width: 3),

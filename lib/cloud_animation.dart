@@ -11,6 +11,8 @@ class CloudAnimationScreen extends StatefulWidget {
   final int currentStage;
   final int totalStages;
   final VoidCallback onStageAdvance;
+  final String currentMonth;
+  final String monthNumber;
 
   const CloudAnimationScreen({
     super.key,
@@ -21,6 +23,8 @@ class CloudAnimationScreen extends StatefulWidget {
     required this.currentStage,
     required this.totalStages,
     required this.onStageAdvance,
+    required this.currentMonth,
+    required this.monthNumber,
   });
 
   @override
@@ -116,21 +120,19 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => ResultScreen(
-            selectedCrop: widget.selectedCrop,
-            irrigationLevel: widget.irrigationLevel,
-            fertilizerLevel: widget.fertilizerLevel,
-            pesticideLevel: widget.pesticideLevel,
-            currentStage: widget.currentStage,
-            totalStages: widget.totalStages,
-            onStageAdvance: widget.onStageAdvance,
-          ),
-          transitionsBuilder: (
-            context,
-            animation,
-            secondaryAnimation,
-            child,
-          ) {
+          pageBuilder:
+              (context, animation, secondaryAnimation) => ResultScreen(
+                selectedCrop: widget.selectedCrop,
+                irrigationLevel: widget.irrigationLevel,
+                fertilizerLevel: widget.fertilizerLevel,
+                pesticideLevel: widget.pesticideLevel,
+                currentStage: widget.currentStage,
+                totalStages: widget.totalStages,
+                onStageAdvance: widget.onStageAdvance,
+                currentMonth: widget.currentMonth,
+                monthNumber: widget.monthNumber,
+              ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 800),

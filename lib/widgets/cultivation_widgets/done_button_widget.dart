@@ -12,6 +12,8 @@ class DoneButtonWidget extends StatelessWidget {
   final int currentStage;
   final int totalStages;
   final VoidCallback onStageAdvance;
+  final String currentMonth;
+  final String monthNumber;
 
   const DoneButtonWidget({
     super.key,
@@ -23,6 +25,8 @@ class DoneButtonWidget extends StatelessWidget {
     required this.currentStage,
     required this.totalStages,
     required this.onStageAdvance,
+    required this.currentMonth,
+    required this.monthNumber,
   });
 
   @override
@@ -46,15 +50,18 @@ class DoneButtonWidget extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => CloudAnimationScreen(
-                  selectedCrop: selectedCrop,
-                  irrigationLevel: irrigationLevel,
-                  fertilizerLevel: fertilizerLevel,
-                  pesticideLevel: pesticideLevel,
-                  currentStage: currentStage,
-                  totalStages: totalStages,
-                  onStageAdvance: onStageAdvance,
-                ),
+                builder:
+                    (context) => CloudAnimationScreen(
+                      selectedCrop: selectedCrop,
+                      irrigationLevel: irrigationLevel,
+                      fertilizerLevel: fertilizerLevel,
+                      pesticideLevel: pesticideLevel,
+                      currentStage: currentStage,
+                      totalStages: totalStages,
+                      onStageAdvance: onStageAdvance,
+                      currentMonth: currentMonth,
+                      monthNumber: monthNumber,
+                    ),
               ),
             );
           },

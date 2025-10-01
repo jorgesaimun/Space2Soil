@@ -147,7 +147,11 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LandSelectionScreen(selectedCrop: currentCrop),
+          builder:
+              (context) => LandSelectionScreen(
+                selectedCrop: currentCrop,
+                division: _currentDivision,
+              ),
         ),
       );
     }

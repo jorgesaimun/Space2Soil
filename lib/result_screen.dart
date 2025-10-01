@@ -14,6 +14,8 @@ class ResultScreen extends StatefulWidget {
   final int currentStage;
   final int totalStages;
   final VoidCallback onStageAdvance;
+  final String currentMonth;
+  final String monthNumber;
 
   const ResultScreen({
     super.key,
@@ -24,6 +26,8 @@ class ResultScreen extends StatefulWidget {
     required this.currentStage,
     required this.totalStages,
     required this.onStageAdvance,
+    required this.currentMonth,
+    required this.monthNumber,
   });
 
   @override
@@ -31,10 +35,6 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  // Calendar data
-  String _currentMonth = 'FEB';
-  String _monthNumber = '01';
-
   // Result data
   String _whatHappened = 'Successfully ripe';
   String _why = 'Perfect Irrigation';
@@ -78,8 +78,8 @@ class _ResultScreenState extends State<ResultScreen> {
         children: [
           // Top Left: Calendar widget
           CalendarWidget(
-            currentMonth: _currentMonth,
-            monthNumber: _monthNumber,
+            currentMonth: widget.currentMonth,
+            monthNumber: widget.monthNumber,
           ),
           const SizedBox(height: 40),
           // Left Bottom: Farmer with speech bubble
@@ -124,12 +124,13 @@ class _ResultScreenState extends State<ResultScreen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => FinalResultScreen(
-                selectedCrop: widget.selectedCrop,
-                irrigationLevel: widget.irrigationLevel,
-                fertilizerLevel: widget.fertilizerLevel,
-                pesticideLevel: widget.pesticideLevel,
-              ),
+              builder:
+                  (context) => FinalResultScreen(
+                    selectedCrop: widget.selectedCrop,
+                    irrigationLevel: widget.irrigationLevel,
+                    fertilizerLevel: widget.fertilizerLevel,
+                    pesticideLevel: widget.pesticideLevel,
+                  ),
             ),
           );
         } else {

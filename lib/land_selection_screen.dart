@@ -8,8 +8,13 @@ import 'widgets/land_selection_widgets/custom_land_dialog.dart';
 
 class LandSelectionScreen extends StatefulWidget {
   final Crop selectedCrop;
+  final String? division;
 
-  const LandSelectionScreen({super.key, required this.selectedCrop});
+  const LandSelectionScreen({
+    super.key,
+    required this.selectedCrop,
+    this.division,
+  });
 
   @override
   State<LandSelectionScreen> createState() => _LandSelectionScreenState();
@@ -25,9 +30,9 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
   // Pre-defined land sizes (Length x Width in feet)
   final List<Land> _predefinedLands = [
     // Examples covering squares, wide and tall rectangles
-    Land(length: 100, width: 50, isCustom: false),  // 100×50
-    Land(length: 80, width: 80, isCustom: false),   // 80×80
-    Land(length: 30, width: 700, isCustom: false),  // 30×700
+    Land(length: 100, width: 50, isCustom: false), // 100×50
+    Land(length: 80, width: 80, isCustom: false), // 80×80
+    Land(length: 30, width: 700, isCustom: false), // 30×700
     Land(length: 50, width: 100, isCustom: false),
     Land(length: 120, width: 90, isCustom: false),
     Land(length: 150, width: 100, isCustom: false),
@@ -133,7 +138,8 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
                   setState(() {
                     _currentIndex = page * 2;
                     // Keep selection within the visible pair
-                    if (_selectedIndex < _currentIndex || _selectedIndex > _currentIndex + 1) {
+                    if (_selectedIndex < _currentIndex ||
+                        _selectedIndex > _currentIndex + 1) {
                       _selectedIndex = _currentIndex;
                     }
                   });
@@ -144,7 +150,9 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
                   final secondIndex = firstIndex + 1;
                   final first = _predefinedLands[firstIndex];
                   final second =
-                      secondIndex < _predefinedLands.length ? _predefinedLands[secondIndex] : null;
+                      secondIndex < _predefinedLands.length
+                          ? _predefinedLands[secondIndex]
+                          : null;
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -172,10 +180,7 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
       onTap: () => setState(() => _selectedIndex = index),
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 260, maxHeight: 280),
-        child: LandPanelWidget(
-          land: land,
-          isSelected: _selectedIndex == index,
-        ),
+        child: LandPanelWidget(land: land, isSelected: _selectedIndex == index),
       ),
     );
   }
@@ -211,8 +216,7 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
           mainAxisAlignment:
               isWide ? MainAxisAlignment.center : MainAxisAlignment.spaceEvenly,
           children: [
-            if (!isWide)
-              _buildCustomButton(() => _showCustomLandDialog()),
+            if (!isWide) _buildCustomButton(() => _showCustomLandDialog()),
             _buildActionButton(
               'START',
               const Color(0xFF4CAF50),
@@ -307,12 +311,13 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
     showDialog<Land>(
       context: context,
       barrierDismissible: true,
-      builder: (context) => CustomLandDialog(
-        onLandCreated: (land) {
-          // kept for backwards compatibility; will be handled on pop result too
-          _navigateToFarm(land);
-        },
-      ),
+      builder:
+          (context) => CustomLandDialog(
+            onLandCreated: (land) {
+              // kept for backwards compatibility; will be handled on pop result too
+              _navigateToFarm(land);
+            },
+          ),
     ).then((result) {
       if (mounted) setState(() => _isDialogOpen = false);
       if (result != null) {
@@ -333,6 +338,7 @@ class _LandSelectionScreenState extends State<LandSelectionScreen> {
             (context) => CultivationScreen(
               selectedCrop: widget.selectedCrop,
               selectedLand: selectedLand,
+              division: widget.division,
             ),
       ),
     );

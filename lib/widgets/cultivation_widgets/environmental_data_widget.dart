@@ -3,14 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 class EnvironmentalDataWidget extends StatelessWidget {
   final double temperature;
-  final double humidity;
-  final String ndti;
+  final double smap;
+  final String ndvi;
 
   const EnvironmentalDataWidget({
     super.key,
     required this.temperature,
-    required this.humidity,
-    required this.ndti,
+    required this.smap,
+    required this.ndvi,
   });
 
   @override
@@ -25,15 +25,15 @@ class EnvironmentalDataWidget extends StatelessWidget {
         ),
         const SizedBox(height: 15),
         _buildDataCard(
-          title: 'HUMIDITY',
+          title: 'SMAP',
           icon: const Icon(Icons.water_drop, color: Colors.blue, size: 40),
-          value: '${humidity.toInt()}%',
+          value: '${smap.toInt()}%',
         ),
         const SizedBox(height: 15),
         _buildDataCard(
-          title: 'NDTI',
+          title: 'NDVI',
           icon: const Icon(Icons.check, color: Colors.green, size: 40),
-          value: ndti,
+          value: ndvi,
         ),
       ],
     );
