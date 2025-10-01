@@ -9,6 +9,7 @@ class CloudAnimationScreen extends StatefulWidget {
   final double fertilizerLevel;
   final double pesticideLevel;
   final int currentStage;
+  final int totalStages;
   final VoidCallback onStageAdvance;
 
   const CloudAnimationScreen({
@@ -18,6 +19,7 @@ class CloudAnimationScreen extends StatefulWidget {
     required this.fertilizerLevel,
     required this.pesticideLevel,
     required this.currentStage,
+    required this.totalStages,
     required this.onStageAdvance,
   });
 
@@ -108,37 +110,32 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
     await Future.delayed(const Duration(milliseconds: 500));
     _cloud3Controller.repeat();
 
-    // Navigate based on current stage after animation
+    // Navigate to result screen after animation (for all stages)
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
-      if (widget.currentStage == 6) {
-        // Final stage - go to result screen
-        Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder:
-                (context, animation, secondaryAnimation) => ResultScreen(
-                  selectedCrop: widget.selectedCrop,
-                  irrigationLevel: widget.irrigationLevel,
-                  fertilizerLevel: widget.fertilizerLevel,
-                  pesticideLevel: widget.pesticideLevel,
-                ),
-            transitionsBuilder: (
-              context,
-              animation,
-              secondaryAnimation,
-              child,
-            ) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 800),
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => ResultScreen(
+            selectedCrop: widget.selectedCrop,
+            irrigationLevel: widget.irrigationLevel,
+            fertilizerLevel: widget.fertilizerLevel,
+            pesticideLevel: widget.pesticideLevel,
+            currentStage: widget.currentStage,
+            totalStages: widget.totalStages,
+            onStageAdvance: widget.onStageAdvance,
           ),
-        );
-      } else {
-        // Not final stage - advance stage and return to cultivation
-        widget.onStageAdvance();
-        Navigator.pop(context);
-      }
+          transitionsBuilder: (
+            context,
+            animation,
+            secondaryAnimation,
+            child,
+          ) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 800),
+        ),
+      );
     }
   }
 
@@ -339,7 +336,7 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
             child: Column(
               children: [
                 Text(
-                  widget.currentStage == 6
+                  widget.currentStage == widget.totalStages
                       ? 'Processing Final Results...'
                       : 'Growing Your ${widget.selectedCrop.name}...',
                   style: GoogleFonts.vt323(
@@ -358,7 +355,7 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  widget.currentStage == 6
+                  widget.currentStage == widget.totalStages
                       ? 'Calculating final results for ${widget.selectedCrop.name}'
                       : 'Stage ${widget.currentStage} → Stage ${widget.currentStage + 1}',
                   style: GoogleFonts.vt323(

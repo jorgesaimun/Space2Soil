@@ -10,6 +10,7 @@ class DoneButtonWidget extends StatelessWidget {
   final double fertilizerLevel;
   final double pesticideLevel;
   final int currentStage;
+  final int totalStages;
   final VoidCallback onStageAdvance;
 
   const DoneButtonWidget({
@@ -20,6 +21,7 @@ class DoneButtonWidget extends StatelessWidget {
     required this.fertilizerLevel,
     required this.pesticideLevel,
     required this.currentStage,
+    required this.totalStages,
     required this.onStageAdvance,
   });
 
@@ -44,15 +46,15 @@ class DoneButtonWidget extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder:
-                    (context) => CloudAnimationScreen(
-                      selectedCrop: selectedCrop,
-                      irrigationLevel: irrigationLevel,
-                      fertilizerLevel: fertilizerLevel,
-                      pesticideLevel: pesticideLevel,
-                      currentStage: currentStage,
-                      onStageAdvance: onStageAdvance,
-                    ),
+                builder: (context) => CloudAnimationScreen(
+                  selectedCrop: selectedCrop,
+                  irrigationLevel: irrigationLevel,
+                  fertilizerLevel: fertilizerLevel,
+                  pesticideLevel: pesticideLevel,
+                  currentStage: currentStage,
+                  totalStages: totalStages,
+                  onStageAdvance: onStageAdvance,
+                ),
               ),
             );
           },

@@ -5,11 +5,15 @@ import 'stage_image_widget.dart';
 class SeedPanelWidget extends StatelessWidget {
   final String stageLabel;
   final int currentStage;
+  final int totalStages;
+  final String cropFolderName;
 
   const SeedPanelWidget({
     super.key,
     required this.stageLabel,
     required this.currentStage,
+    required this.totalStages,
+    required this.cropFolderName,
   });
 
   @override
@@ -33,12 +37,12 @@ class SeedPanelWidget extends StatelessWidget {
               decoration: _buildPanelDecoration(),
               child: Column(
                 children: [
-                  // Stage progress indicator
+                  // Stage progress indicator (dynamic count)
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(6, (index) {
+                      children: List.generate(totalStages, (index) {
                         return Container(
                           margin: const EdgeInsets.symmetric(horizontal: 1.5),
                           width: 6,
@@ -57,12 +61,12 @@ class SeedPanelWidget extends StatelessWidget {
                   // Stage image - taking most of the space
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(6.0, 0.0, 6.0, 6.0),
+                      padding: const EdgeInsets.fromLTRB(6.0, 20.0, 6.0, 6.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: StageImageWidget(
                           currentStage: currentStage,
-                          cropType: 'tomato',
+                          cropType: cropFolderName,
                         ),
                       ),
                     ),

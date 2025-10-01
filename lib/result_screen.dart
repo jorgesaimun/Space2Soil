@@ -4,13 +4,16 @@ import 'models/crop.dart';
 import 'widgets/cultivation_widgets/calendar_widget.dart';
 import 'widgets/result_widgets/farmer_result_widget.dart';
 import 'widgets/result_widgets/results_panel_widget.dart';
-import 'mode_selection_screen.dart';
+import 'final_result_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final Crop selectedCrop;
   final double irrigationLevel;
   final double fertilizerLevel;
   final double pesticideLevel;
+  final int currentStage;
+  final int totalStages;
+  final VoidCallback onStageAdvance;
 
   const ResultScreen({
     super.key,
@@ -18,6 +21,9 @@ class ResultScreen extends StatefulWidget {
     required this.irrigationLevel,
     required this.fertilizerLevel,
     required this.pesticideLevel,
+    required this.currentStage,
+    required this.totalStages,
+    required this.onStageAdvance,
   });
 
   @override
@@ -109,15 +115,28 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Widget _buildNextButton() {
+    final isLastStage = widget.currentStage == widget.totalStages;
+
     return GestureDetector(
       onTap: () {
-        // Navigate to mode selection screen
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ModeSelectionScreen(),
-          ),
-        );
+        if (isLastStage) {
+          // Final stage - navigate to final result screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FinalResultScreen(
+                selectedCrop: widget.selectedCrop,
+                irrigationLevel: widget.irrigationLevel,
+                fertilizerLevel: widget.fertilizerLevel,
+                pesticideLevel: widget.pesticideLevel,
+              ),
+            ),
+          );
+        } else {
+          // Not final stage - advance stage and return to cultivation
+          widget.onStageAdvance();
+          Navigator.pop(context); // Pop result screen (cloud was replaced)
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
@@ -138,7 +157,7 @@ class _ResultScreenState extends State<ResultScreen> {
           ],
         ),
         child: Text(
-          'NEXT',
+          isLastStage ? 'FINISH' : 'NEXT',
           style: GoogleFonts.vt323(
             fontSize: 24,
             fontWeight: FontWeight.bold,

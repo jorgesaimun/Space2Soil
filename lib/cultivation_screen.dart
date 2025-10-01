@@ -23,8 +23,9 @@ class CultivationScreen extends StatefulWidget {
 }
 
 class _CultivationScreenState extends State<CultivationScreen> {
-  // Stage tracking (1-6 stages across 3 months)
+  // Stage tracking - dynamic based on crop images
   int _currentStage = 1;
+  late int _totalStages;
 
   // Environmental data
   double _temperature = 33.0;
@@ -43,35 +44,60 @@ class _CultivationScreenState extends State<CultivationScreen> {
   @override
   void initState() {
     super.initState();
+    _totalStages = _getTotalStagesForCrop();
     _updateCalendarForStage();
   }
 
-  // Update calendar based on current stage
+  /// Get total number of stages based on crop image count
+  int _getTotalStagesForCrop() {
+    // Map crop names to their folder names
+    final cropFolderMap = {
+      'tomato': 7,
+      'potato': 5,
+      'rice': 6,
+      'banana': 12,
+      'betel leaf': 12,
+      'brinjal': 8,
+      'eggplant': 8,
+      'cabbage': 6,
+      'cauliflower': 6,
+      'chili': 7,
+      'jute': 5,
+      'lemon': 11,
+      'lentil': 6,
+      'maize': 6,
+      'mango': 11,
+      'mustard': 5,
+      'tea': 9,
+      'watermelon': 6,
+      'wheat': 6,
+    };
+
+    final cropName = widget.selectedCrop.name.toLowerCase();
+    return cropFolderMap[cropName] ?? 6; // Default to 6 if not found
+  }
+
+  /// Update calendar based on current stage
   void _updateCalendarForStage() {
-    // 6 stages across 3 months: FEB, MAR, APR
-    // Stage 1-2: FEB, Stage 3-4: MAR, Stage 5-6: APR
-    switch (_currentStage) {
-      case 1:
-      case 2:
-        _currentMonth = 'FEB';
-        _monthNumber = _currentStage.toString().padLeft(2, '0');
-        break;
-      case 3:
-      case 4:
-        _currentMonth = 'MAR';
-        _monthNumber = (_currentStage - 2).toString().padLeft(2, '0');
-        break;
-      case 5:
-      case 6:
-        _currentMonth = 'APR';
-        _monthNumber = (_currentStage - 4).toString().padLeft(2, '0');
-        break;
+    // Distribute stages across 3 months: FEB, MAR, APR
+    final stagesPerMonth = (_totalStages / 3).ceil();
+
+    if (_currentStage <= stagesPerMonth) {
+      _currentMonth = 'FEB';
+      _monthNumber = _currentStage.toString().padLeft(2, '0');
+    } else if (_currentStage <= stagesPerMonth * 2) {
+      _currentMonth = 'MAR';
+      _monthNumber = (_currentStage - stagesPerMonth).toString().padLeft(2, '0');
+    } else {
+      _currentMonth = 'APR';
+      _monthNumber =
+          (_currentStage - (stagesPerMonth * 2)).toString().padLeft(2, '0');
     }
   }
 
-  // Advance to next stage
+  /// Advance to next stage
   void _advanceStage() {
-    if (_currentStage < 6) {
+    if (_currentStage < _totalStages) {
       setState(() {
         _currentStage++;
         _updateCalendarForStage();
@@ -79,17 +105,16 @@ class _CultivationScreenState extends State<CultivationScreen> {
     }
   }
 
-  // Get current stage label
+  /// Get current stage label based on progress
   String _getCurrentStageLabel() {
-    const stageLabels = {
-      1: 'SEED',
-      2: 'SPROUT',
-      3: 'YOUNG',
-      4: 'GROWING',
-      5: 'MATURE',
-      6: 'HARVEST',
-    };
-    return stageLabels[_currentStage] ?? 'SEED';
+    final progress = _currentStage / _totalStages;
+
+    if (progress <= 0.16) return 'SEED';
+    if (progress <= 0.33) return 'SPROUT';
+    if (progress <= 0.50) return 'YOUNG';
+    if (progress <= 0.66) return 'GROWING';
+    if (progress <= 0.83) return 'MATURE';
+    return 'HARVEST';
   }
 
   @override
@@ -155,6 +180,8 @@ class _CultivationScreenState extends State<CultivationScreen> {
             child: SeedPanelWidget(
               stageLabel: _getCurrentStageLabel(),
               currentStage: _currentStage,
+              totalStages: _totalStages,
+              cropFolderName: widget.selectedCrop.name.toLowerCase(),
             ),
           ),
           const SizedBox(height: 20),
@@ -195,6 +222,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
             fertilizerLevel: _fertilizerLevel,
             pesticideLevel: _pesticideLevel,
             currentStage: _currentStage,
+            totalStages: _totalStages,
             onStageAdvance: _advanceStage,
           ),
         ],
