@@ -52,7 +52,7 @@ class StageImageWidget extends StatelessWidget {
       if (index >= candidates.length) {
         return Image.asset(
           fallbackImage,
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
           errorBuilder: (context, error2, stackTrace2) {
             return Container(
               width: double.infinity,
@@ -65,7 +65,7 @@ class StageImageWidget extends StatelessWidget {
       final path = candidates[index];
       return Image.asset(
         path,
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           return buildAt(index + 1);
         },

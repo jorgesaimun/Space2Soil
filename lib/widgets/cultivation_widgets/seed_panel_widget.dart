@@ -61,7 +61,7 @@ class SeedPanelWidget extends StatelessWidget {
                   // Stage image - taking most of the space
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(6.0, 20.0, 6.0, 6.0),
+                      padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: StageImageWidget(
