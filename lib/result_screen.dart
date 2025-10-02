@@ -16,6 +16,7 @@ class ResultScreen extends StatefulWidget {
   final VoidCallback onStageAdvance;
   final String currentMonth;
   final String monthNumber;
+  final String? division;
 
   const ResultScreen({
     super.key,
@@ -28,6 +29,7 @@ class ResultScreen extends StatefulWidget {
     required this.onStageAdvance,
     required this.currentMonth,
     required this.monthNumber,
+    this.division,
   });
 
   @override
@@ -130,6 +132,7 @@ class _ResultScreenState extends State<ResultScreen> {
                     irrigationLevel: widget.irrigationLevel,
                     fertilizerLevel: widget.fertilizerLevel,
                     pesticideLevel: widget.pesticideLevel,
+                    division: widget.division,
                   ),
             ),
           );

@@ -14,6 +14,7 @@ class DoneButtonWidget extends StatelessWidget {
   final VoidCallback onStageAdvance;
   final String currentMonth;
   final String monthNumber;
+  final String? division;
 
   const DoneButtonWidget({
     super.key,
@@ -27,6 +28,7 @@ class DoneButtonWidget extends StatelessWidget {
     required this.onStageAdvance,
     required this.currentMonth,
     required this.monthNumber,
+    this.division,
   });
 
   @override
@@ -61,6 +63,7 @@ class DoneButtonWidget extends StatelessWidget {
                       onStageAdvance: onStageAdvance,
                       currentMonth: currentMonth,
                       monthNumber: monthNumber,
+                      division: division,
                     ),
               ),
             );

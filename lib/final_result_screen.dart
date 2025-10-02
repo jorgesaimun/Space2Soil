@@ -2,7 +2,6 @@ import 'package:demo_game/unlocked_all_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'models/crop.dart';
-import 'mode_selection_screen.dart';
 
 /// Final result screen shown after completing all cultivation stages
 class FinalResultScreen extends StatelessWidget {
@@ -10,6 +9,7 @@ class FinalResultScreen extends StatelessWidget {
   final double irrigationLevel;
   final double fertilizerLevel;
   final double pesticideLevel;
+  final String? division;
 
   const FinalResultScreen({
     super.key,
@@ -17,6 +17,7 @@ class FinalResultScreen extends StatelessWidget {
     required this.irrigationLevel,
     required this.fertilizerLevel,
     required this.pesticideLevel,
+    this.division,
   });
 
   /// Format crop cycle to display in the header (e.g., "February-July" -> "FEB-JUL")
@@ -187,8 +188,8 @@ class FinalResultScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) => const UnlockedAllMode(
-                                location: 'Some Location',
+                              (context) => UnlockedAllMode(
+                                location: division ?? 'Unknown Location',
                               ),
                         ),
                       );

@@ -13,6 +13,7 @@ class CloudAnimationScreen extends StatefulWidget {
   final VoidCallback onStageAdvance;
   final String currentMonth;
   final String monthNumber;
+  final String? division;
 
   const CloudAnimationScreen({
     super.key,
@@ -25,6 +26,7 @@ class CloudAnimationScreen extends StatefulWidget {
     required this.onStageAdvance,
     required this.currentMonth,
     required this.monthNumber,
+    this.division,
   });
 
   @override
@@ -131,6 +133,7 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
                 onStageAdvance: widget.onStageAdvance,
                 currentMonth: widget.currentMonth,
                 monthNumber: widget.monthNumber,
+                division: widget.division,
               ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);

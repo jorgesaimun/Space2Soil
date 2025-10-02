@@ -617,6 +617,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
                 onStageAdvance: _advanceStage,
                 currentMonth: _currentMonth,
                 monthNumber: _monthNumber,
+                division: widget.division,
               ),
             ),
           ],
