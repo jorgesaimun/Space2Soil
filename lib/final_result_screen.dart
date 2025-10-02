@@ -181,8 +181,8 @@ class FinalResultScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 // Next button - Bottom Center
                 Center(
-                  child: ElevatedButton(
-                    onPressed: () {
+                  child: GestureDetector(
+                    onTap: () {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -193,23 +193,37 @@ class FinalResultScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9C27B0),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 10,
-                      ),
-                      shape: RoundedRectangleBorder(
+                    child: Container(
+                      width: 120,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFE6A8E6), // Light purple
+                            Color(0xFFC585C5), // Darker purple
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
                         borderRadius: BorderRadius.circular(25),
+                        border: Border.all(color: Colors.black, width: 2),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            offset: const Offset(0, 3),
+                            blurRadius: 5,
+                          ),
+                        ],
                       ),
-                      elevation: 8,
-                    ),
-                    child: Text(
-                      'NEXT',
-                      style: GoogleFonts.vt323(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      child: Center(
+                        child: Text(
+                          'NEXT',
+                          style: GoogleFonts.vt323(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
                   ),
