@@ -59,35 +59,92 @@ class EarthGlobeSection extends StatelessWidget {
 
   Widget _buildRotatingEarthGlobe() {
     return Center(
-      child: AnimatedBuilder(
-        animation: globeController,
-        builder: (context, child) {
-          return Transform.rotate(
-            angle: globeController.value * 2 * math.pi,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const RadialGradient(
-                  colors: [
-                    Color(0xFF4FC3F7), // Light blue
-                    Color(0xFF29B6F6), // Blue
-                    Color(0xFF0288D1), // Dark blue
-                  ],
+      child: Container(
+        width: 280,
+        height: 280,
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF8DC), // Cream background
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: const Color(0xFFD84315), width: 3),
+        ),
+        child: Stack(
+          children: [
+            // Grid background
+            _buildGridBackground(),
+            // Rotating map globe
+            Center(
+              child: Container(
+                width: 200,
+                height: 200,
+                child: AnimatedBuilder(
+                  animation: globeController,
+                  builder: (context, child) {
+                    return Transform.rotate(
+                      angle: globeController.value * 2 * math.pi,
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.3),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                              offset: const Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                        child: ClipOval(
+                          child: Container(
+                            width: 200,
+                            height: 200,
+                            child: AspectRatio(
+                              aspectRatio: 1.0,
+                              child: Image.asset(
+                                'assets/images/map.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Fallback if map.png is not available
+                                  return Container(
+                                    width: 200,
+                                    height: 200,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          Color(0xFF4FC3F7),
+                                          Color(0xFF29B6F6),
+                                          Color(0xFF0288D1),
+                                        ],
+                                      ),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        _buildContinent(40, 60, 80, 60),
+                                        _buildContinent(
+                                          null,
+                                          40,
+                                          60,
+                                          40,
+                                          bottom: 50,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                border: Border.all(color: Colors.white, width: 3),
-              ),
-              child: Stack(
-                children: [
-                  _buildContinent(40, 60, 80, 60),
-                  _buildContinent(null, 40, 60, 40, bottom: 50),
-                  _buildGridOverlay(),
-                ],
               ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
@@ -116,13 +173,8 @@ class EarthGlobeSection extends StatelessWidget {
     );
   }
 
-  Widget _buildGridOverlay() {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-      ),
-    );
+  Widget _buildGridBackground() {
+    return Positioned.fill(child: CustomPaint(painter: GridPainter()));
   }
 
   Widget _buildNextButton() {
@@ -135,6 +187,13 @@ class EarthGlobeSection extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(25),
         border: Border.all(color: const Color(0xFF4A148C), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 5,
+            spreadRadius: 1,
+          ),
+        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -156,4 +215,31 @@ class EarthGlobeSection extends StatelessWidget {
       ),
     );
   }
+}
+
+// Custom painter for grid background
+class GridPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = const Color(0xFF8D6E63).withOpacity(0.3)
+          ..strokeWidth = 1
+          ..style = PaintingStyle.stroke;
+
+    const gridSpacing = 20.0;
+
+    // Draw vertical lines
+    for (double x = gridSpacing; x < size.width; x += gridSpacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+    }
+
+    // Draw horizontal lines
+    for (double y = gridSpacing; y < size.height; y += gridSpacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
