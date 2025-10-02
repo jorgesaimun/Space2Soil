@@ -1,3 +1,4 @@
+import 'package:demo_game/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'crop_selection_screen.dart';
 import 'settings_screen.dart';
@@ -189,8 +190,9 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
       child: Column(
         children: [
           _buildSidebarButton('assets/images/profile_icon.png', 'Profile', () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Profile screen coming soon!')),
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
             );
           }),
           const SizedBox(height: 16),
