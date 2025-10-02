@@ -141,7 +141,7 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFE0B2),
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(15),
                     border: Border.all(
                       color: const Color(0xFFD84315),
