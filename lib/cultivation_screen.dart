@@ -199,8 +199,6 @@ class _CultivationScreenState extends State<CultivationScreen> {
     return widget.division ?? 'Dhaka';
   }
 
-
-
   /// Update calendar and environmental data based on current month
   void _updateCalendarAndEnvironmentalData() {
     if (_cultivationMonths.isEmpty) return;
@@ -486,104 +484,143 @@ class _CultivationScreenState extends State<CultivationScreen> {
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
                     ),
                   )
-                  : Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        // Left column: Calendar, Speech bubble, Farmer
-                        _buildLeftColumn(),
-                        const SizedBox(width: 8),
-                        // Center column: Seed image, Action buttons
-                        _buildCenterColumn(),
-                        const SizedBox(width: 8),
-                        // Right column: Environmental data, Done button
-                        _buildRightColumn(),
-                      ],
-                    ),
+                  : LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Left column: Calendar, Speech bubble, Farmer
+                            _buildLeftColumn(constraints),
+                            const SizedBox(width: 8),
+                            // Center column: Seed image, Action buttons
+                            _buildCenterColumn(constraints),
+                            const SizedBox(width: 8),
+                            // Right column: Environmental data, Done button
+                            _buildRightColumn(constraints),
+                          ],
+                        ),
+                      );
+                    },
                   ),
         ),
       ),
     );
   }
 
-  Widget _buildLeftColumn() {
+  Widget _buildLeftColumn(BoxConstraints constraints) {
     return Expanded(
       flex: 3,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left Top: Calendar widget
-          CalendarWidget(
-            currentMonth: _currentMonth,
-            monthNumber: _monthNumber,
-          ),
-          const SizedBox(height: 10),
-          // Left Middle: Speech bubble
-          FarmerSectionWidget(cropName: currentCrop.name),
-        ],
+      child: SizedBox(
+        height: constraints.maxHeight - 24, // Account for padding
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Calendar widget - fixed height
+            SizedBox(
+              height: constraints.maxHeight * 0.25, // 25% of screen height
+              child: CalendarWidget(
+                currentMonth: _currentMonth,
+                monthNumber: _monthNumber,
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Farmer section - remaining space
+            Expanded(child: FarmerSectionWidget(cropName: currentCrop.name)),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCenterColumn() {
+  Widget _buildCenterColumn(BoxConstraints constraints) {
+    print('🏗️ Building center column with constraints: $constraints');
     return Expanded(
       flex: 4,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Center Top: Dynamic stage image
-          Flexible(
-            child: SeedPanelWidget(
-              stageLabel: _getCurrentStageLabel(),
-              currentStage: _currentStage,
-              totalStages: _totalStages,
-              cropFolderName: _normalizeCropFolderName(currentCrop.name),
+          // Seed panel - flexible to use available space
+          Expanded(
+            flex: 6, // Give more space to seed panel
+            child: LayoutBuilder(
+              builder: (context, localConstraints) {
+                return SizedBox(
+                  height: localConstraints.maxHeight,
+                  child: SeedPanelWidget(
+                    stageLabel: _getCurrentStageLabel(),
+                    currentStage: _currentStage,
+                    totalStages: _totalStages,
+                    cropFolderName: _normalizeCropFolderName(currentCrop.name),
+                  ),
+                );
+              },
             ),
           ),
-          const SizedBox(height: 20),
-          // Center Bottom: Three action buttons
-          ActionButtonsWidget(
-            irrigationLevel: _irrigationLevel,
-            fertilizerLevel: _fertilizerLevel,
-            pesticideLevel: _pesticideLevel,
-            onIrrigationChanged:
-                (value) => setState(() => _irrigationLevel = value),
-            onFertilizerChanged:
-                (value) => setState(() => _fertilizerLevel = value),
-            onPesticideChanged:
-                (value) => setState(() => _pesticideLevel = value),
+          const SizedBox(height: 8),
+          // Action buttons - flexible but constrained
+          Expanded(
+            flex: 4, // Give less space to action buttons
+            child: LayoutBuilder(
+              builder: (context, localConstraints) {
+                return SizedBox(
+                  height: localConstraints.maxHeight,
+                  child: ActionButtonsWidget(
+                    irrigationLevel: _irrigationLevel,
+                    fertilizerLevel: _fertilizerLevel,
+                    pesticideLevel: _pesticideLevel,
+                    onIrrigationChanged:
+                        (value) => setState(() => _irrigationLevel = value),
+                    onFertilizerChanged:
+                        (value) => setState(() => _fertilizerLevel = value),
+                    onPesticideChanged:
+                        (value) => setState(() => _pesticideLevel = value),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildRightColumn() {
+  Widget _buildRightColumn(BoxConstraints constraints) {
     return Expanded(
       flex: 2,
-      child: Column(
-        children: [
-          // Right Top to Middle: Environmental data widgets
-          EnvironmentalDataWidget(
-            temperature: _temperature,
-            smap: _smap,
-            ndvi: _ndvi,
-          ),
-          const Spacer(),
-          // Right Bottom: Large Done button
-          DoneButtonWidget(
-            cropName: currentCrop.name,
-            selectedCrop: currentCrop,
-            irrigationLevel: _irrigationLevel,
-            fertilizerLevel: _fertilizerLevel,
-            pesticideLevel: _pesticideLevel,
-            currentStage: _currentStage,
-            totalStages: _totalStages,
-            onStageAdvance: _advanceStage,
-            currentMonth: _currentMonth,
-            monthNumber: _monthNumber,
-          ),
-        ],
+      child: SizedBox(
+        height: constraints.maxHeight - 24, // Account for padding
+        child: Column(
+          children: [
+            // Environmental data - takes most space
+            Expanded(
+              flex: 3,
+              child: EnvironmentalDataWidget(
+                temperature: _temperature,
+                smap: _smap,
+                ndvi: _ndvi,
+              ),
+            ),
+            const SizedBox(height: 10),
+            // Done button - fixed height
+            SizedBox(
+              height: constraints.maxHeight * 0.15, // 15% of screen height
+              child: DoneButtonWidget(
+                cropName: currentCrop.name,
+                selectedCrop: currentCrop,
+                irrigationLevel: _irrigationLevel,
+                fertilizerLevel: _fertilizerLevel,
+                pesticideLevel: _pesticideLevel,
+                currentStage: _currentStage,
+                totalStages: _totalStages,
+                onStageAdvance: _advanceStage,
+                currentMonth: _currentMonth,
+                monthNumber: _monthNumber,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

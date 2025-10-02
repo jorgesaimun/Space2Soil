@@ -21,29 +21,41 @@ class ActionButtonsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildActionControl(
-          title: 'Irrigate',
-          imagePath: 'assets/images/irrigate2.png',
-          value: irrigationLevel,
-          onChanged: onIrrigationChanged,
-        ),
-        _buildActionControl(
-          title: 'Fertilize', 
-          imagePath: 'assets/images/fertilizer.png', // Changed from fertilize2.png
-          value: fertilizerLevel,
-          onChanged: onFertilizerChanged,
-        ),
-        _buildActionControl(
-          title: 'Pesticide',
-          imagePath: 'assets/images/pesticide.png', // Changed from pesticide2.png
-          value: pesticideLevel,
-          onChanged: onPesticideChanged,
-        ),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Calculate button width based on available space
+        double buttonWidth =
+            (constraints.maxWidth - 40) / 3; // 3 buttons + spacing
+        buttonWidth = buttonWidth.clamp(80.0, 100.0); // Min 80px, Max 100px
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildActionControl(
+              title: 'Irrigate',
+              imagePath: 'assets/images/irrigate2.png',
+              value: irrigationLevel,
+              onChanged: onIrrigationChanged,
+              width: buttonWidth,
+            ),
+            _buildActionControl(
+              title: 'Fertilize',
+              imagePath: 'assets/images/fertilizer.png',
+              value: fertilizerLevel,
+              onChanged: onFertilizerChanged,
+              width: buttonWidth,
+            ),
+            _buildActionControl(
+              title: 'Pesticide',
+              imagePath: 'assets/images/pesticide.png',
+              value: pesticideLevel,
+              onChanged: onPesticideChanged,
+              width: buttonWidth,
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -52,69 +64,81 @@ class ActionButtonsWidget extends StatelessWidget {
     required String imagePath,
     required double value,
     required Function(double) onChanged,
+    required double width,
   }) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        // Main card with two sections
-        Container(
-          width: 90, // Reduced from 110 to fit within constraints
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE65100), width: 3),
-          ),
-          child: Column(
-            children: [
-              // Top section - Image
-              Container(
-                height: 70, // Reduced from 100 to save space
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFCC80),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(2)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0), // Reduced padding
-                  child: Image.asset(
-                    imagePath,
-                    fit: BoxFit.cover,
-                    errorBuilder:
-                        (context, error, stackTrace) => const Icon(
-                          Icons.image_not_supported,
-                          size: 30, // Reduced icon size
-                          color: Color(0xFF795548),
-                        ),
-                  ),
-                ),
-              ),
-              // Bottom section - Slider
-              Container(
-                height: 25, // Reduced from 40 to save space
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF5EFE4),
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(8),
-                  ),
-                ),
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    trackShape: _SegmentedSliderTrackShape(),
-                    thumbShape: const _RectSliderThumbShape(
-                      thumbRadius: 8,
-                      thumbHeight: 20,
+    return SizedBox(
+      width: width,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Main card with two sections
+          Container(
+            width: width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFFE65100), width: 3),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top section - Image
+                Container(
+                  height: 65, // Slightly reduced
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFFFCC80),
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(8),
                     ),
-                    overlayShape: SliderComponentShape.noOverlay,
                   ),
-                  child: Slider(value: value, onChanged: onChanged),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.contain, // Changed from cover to contain
+                      errorBuilder:
+                          (context, error, stackTrace) => const Icon(
+                            Icons.image_not_supported,
+                            size: 28,
+                            color: Color(0xFF795548),
+                          ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                // Bottom section - Slider
+                Container(
+                  height: 28, // Slightly increased for better touch target
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF5EFE4),
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(8),
+                    ),
+                  ),
+                  child: SliderTheme(
+                    data: SliderThemeData(
+                      trackShape: _SegmentedSliderTrackShape(),
+                      thumbShape: const _RectSliderThumbShape(
+                        thumbRadius: 8,
+                        thumbHeight: 18,
+                      ),
+                      overlayShape: SliderComponentShape.noOverlay,
+                    ),
+                    child: Slider(
+                      value: value,
+                      onChanged: onChanged,
+                      min: 0.0,
+                      max: 1.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        // Title banner positioned at top-left
-        Positioned(top: -10, left: 5, child: _buildTitleBanner(title)),
-      ],
+          // Title banner positioned at top-left
+          Positioned(top: -8, left: 4, child: _buildTitleBanner(title)),
+        ],
+      ),
     );
   }
 

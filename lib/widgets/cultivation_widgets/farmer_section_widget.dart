@@ -33,7 +33,7 @@ class FarmerSectionWidget extends StatelessWidget {
       child: Text(
         'Welcome to Space2Soil, now here is your ${cropName.toLowerCase()} seed. Choose your action carefully',
         style: GoogleFonts.vt323(
-          fontSize: 10,
+          fontSize: 12,
           fontWeight: FontWeight.bold,
           color: Colors.black,
         ),

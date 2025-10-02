@@ -23,13 +23,13 @@ class EnvironmentalDataWidget extends StatelessWidget {
           icon: const Icon(Icons.thermostat, color: Colors.red, size: 40),
           value: '${temperature.toInt()}°C',
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 10),
         _buildDataCard(
           title: 'SMAP',
           icon: const Icon(Icons.water_drop, color: Colors.blue, size: 40),
           value: '${smap.toInt()}%',
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 10),
         _buildDataCard(
           title: 'NDVI',
           icon: const Icon(Icons.check, color: Colors.green, size: 40),
