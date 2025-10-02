@@ -8,9 +8,9 @@ import 'services/crop_data_manager.dart';
 import 'land_selection_screen.dart';
 
 class CropSelectionScreen extends StatefulWidget {
-  final String? detectedLocation;
+  final String detectedLocation;
 
-  const CropSelectionScreen({super.key, this.detectedLocation});
+  const CropSelectionScreen({super.key, required this.detectedLocation});
 
   @override
   State<CropSelectionScreen> createState() => _CropSelectionScreenState();
@@ -36,21 +36,14 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
       _errorMessage = null;
     });
 
-    // Use passed location if available, otherwise detect from device
-    if (widget.detectedLocation != null) {
-      print('Using passed location: ${widget.detectedLocation}');
-      // Clean and normalize the location name
-      final cleanedLocation = _cleanDivisionName(widget.detectedLocation!);
-      print('Cleaned location name: "$cleanedLocation"');
+    // Use the passed location (always available now)
+    print('Using passed location: ${widget.detectedLocation}');
+    // Clean and normalize the location name
+    final cleanedLocation = _cleanDivisionName(widget.detectedLocation);
+    print('Cleaned location name: "$cleanedLocation"');
 
-      final result = await CropDataManager.loadCropsForDivision(
-        cleanedLocation,
-      );
-      _handleCropDataResult(result);
-    } else {
-      final result = await CropDataManager.loadCropsForCurrentLocation();
-      _handleCropDataResult(result);
-    }
+    final result = await CropDataManager.loadCropsForDivision(cleanedLocation);
+    _handleCropDataResult(result);
   }
 
   /// Clean division name by removing common suffixes and normalizing
@@ -186,7 +179,7 @@ class _CropSelectionScreenState extends State<CropSelectionScreen> {
         message:
             _currentDivision != null
                 ? 'Loading crops for $_currentDivision...'
-                : 'Detecting your location...',
+                : 'Loading crops for your location...',
       );
     }
 

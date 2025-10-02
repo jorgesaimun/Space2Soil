@@ -86,7 +86,7 @@ class ActionButtonsWidget extends StatelessWidget {
                   height: 65, // Slightly reduced
                   width: double.infinity,
                   decoration: const BoxDecoration(
-                    color: Color(0xFFFFCC80),
+                    color: Colors.white,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(8),
                     ),
