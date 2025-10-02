@@ -212,7 +212,10 @@ class _CultivationScreenState extends State<CultivationScreen> {
       // Each stage gets its own month (ideal case)
       // Stage 1 → Month 1, Stage 2 → Month 2, etc.
       _currentMonthIndex = (_currentStage - 1).clamp(0, totalMonths - 1);
-      _monthNumber = '01'; // Always show as first week of the month
+      _monthNumber = _currentStage.toString().padLeft(
+        2,
+        '0',
+      ); // Show current stage number
     } else {
       // More stages than months - distribute evenly but still progress through months
       // Calculate how many stages per month, then advance month accordingly
@@ -222,9 +225,8 @@ class _CultivationScreenState extends State<CultivationScreen> {
         totalMonths - 1,
       );
 
-      // Within each month, show stage progression
-      final stageInMonth = ((_currentStage - 1) % stagesPerMonth) + 1;
-      _monthNumber = stageInMonth.toString().padLeft(2, '0');
+      // Show current stage number for month display
+      _monthNumber = _currentStage.toString().padLeft(2, '0');
     }
 
     // Update current month display
@@ -266,8 +268,12 @@ class _CultivationScreenState extends State<CultivationScreen> {
     String cultivationPeriod,
     Set<String> availableMonths,
   ) {
-    // Parse cultivation period like "October-April" or "Nov-Mar"
-    final parts = cultivationPeriod.split('-');
+    // Parse cultivation period like "October-April", "October–April" or "Nov-Mar"
+    // Handle both regular hyphen and en-dash
+    String normalizedPeriod = cultivationPeriod
+        .replaceAll('–', '-')
+        .replaceAll('—', '-');
+    final parts = normalizedPeriod.split('-');
     if (parts.length != 2) {
       return availableMonths.toList(); // Fallback to available months
     }

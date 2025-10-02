@@ -21,7 +21,7 @@ class CropService {
 
       // Use case-insensitive search to handle name variations
       final response = await _supabase
-          .from('soil2space')
+          .from('soil2space_crop_data')
           .select('crop')
           .ilike('division', normalizedDivision);
 
@@ -48,7 +48,7 @@ class CropService {
           print('Similar divisions found: $similarDivisions');
           // Try searching with the first similar division
           final altResponse = await _supabase
-              .from('soil2space')
+              .from('soil2space_crop_data')
               .select('crop')
               .ilike('division', similarDivisions.first);
 
@@ -79,8 +79,8 @@ class CropService {
   }) async {
     try {
       final response = await _supabase
-          .from('soil2space')
-          .select('cultivation_period, yield, smap, ndvi')
+          .from('soil2space_crop_data')
+          .select('cultivation_period, smap, ndvi')
           .eq('division', division)
           .eq('crop', crop);
 
@@ -94,7 +94,9 @@ class CropService {
   /// Get all available divisions from database
   static Future<List<String>> getAllDivisions() async {
     try {
-      final response = await _supabase.from('soil2space').select('division');
+      final response = await _supabase
+          .from('soil2space_crop_data')
+          .select('division');
 
       return _extractUniqueDivisions(response);
     } catch (e) {

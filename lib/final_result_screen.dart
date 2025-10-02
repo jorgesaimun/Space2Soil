@@ -20,13 +20,19 @@ class FinalResultScreen extends StatelessWidget {
     this.division,
   });
 
-  /// Format crop cycle to display in the header (e.g., "February-July" -> "FEB-JUL")
+  /// Format crop cycle to display in the header (e.g., "October-April (Available in Chattogram)" -> "OCT-APR")
   String _formatCropCycleForDisplay() {
     final cropCycle = selectedCrop.cropCycle;
 
-    // If cropCycle contains months, format them to abbreviated form
-    if (cropCycle.contains('-')) {
-      final months = cropCycle.split('-');
+    // Extract just the month range part, ignore location part in parentheses
+    String monthPart = cropCycle;
+    if (cropCycle.contains('(')) {
+      monthPart = cropCycle.split('(')[0].trim();
+    }
+
+    // If monthPart contains months, format them to abbreviated form
+    if (monthPart.contains('-')) {
+      final months = monthPart.split('-');
       if (months.length == 2) {
         final startMonth = _abbreviateMonth(months[0].trim());
         final endMonth = _abbreviateMonth(months[1].trim());
@@ -34,7 +40,7 @@ class FinalResultScreen extends StatelessWidget {
       }
     }
 
-    return cropCycle.toUpperCase();
+    return monthPart.toUpperCase();
   }
 
   /// Convert month name to 3-letter abbreviation
