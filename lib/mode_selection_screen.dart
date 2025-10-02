@@ -295,8 +295,8 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           ),
           const SizedBox(height: 20),
           // Next Button
-          ElevatedButton(
-            onPressed: () {
+          GestureDetector(
+            onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -307,20 +307,33 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 210, 154, 219),
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+            child: Container(
+              width: 120,
+              height: 50,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
+                ),
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(color: const Color(0xFF4A148C), width: 3),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ),
-            child: const Text(
-              'NEXT',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-                fontFamily: 'VT323',
+              child: Center(
+                child: Text(
+                  'NEXT',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    fontFamily: 'VT323',
+                  ),
+                ),
               ),
             ),
           ),
@@ -331,17 +344,16 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   Widget _buildCharacterSection() {
     return Positioned(
-      right: 20,
-      top: 10,
-      // bottom: 00,
+      right: 10,
+      bottom: 20,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           // Speech Bubble
           Container(
-            width: 200,
-            padding: const EdgeInsets.all(12),
+            width: 180,
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(15),
@@ -350,18 +362,18 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
             child: Text(
               'In Career Mode you can only play with your own area, in Creative Mode, you can play on any',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: 11,
                 color: Colors.black,
                 fontFamily: 'VT323',
               ),
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           // Character
           Container(
-            width: 100,
-            height: 120,
+            width: 90,
+            height: 110,
             child: Image.asset(
               'assets/images/farmer_img.png',
               fit: BoxFit.contain,
