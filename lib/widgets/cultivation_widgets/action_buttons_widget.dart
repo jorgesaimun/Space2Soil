@@ -34,14 +34,14 @@ class ActionButtonsWidget extends StatelessWidget {
           children: [
             _buildActionControl(
               title: 'Irrigate',
-              imagePath: 'assets/images/irrigate2.png',
+              imagePath: 'assets/images/irrigate.png',
               value: irrigationLevel,
               onChanged: onIrrigationChanged,
               width: buttonWidth,
             ),
             _buildActionControl(
               title: 'Fertilize',
-              imagePath: 'assets/images/fertilizer.png',
+              imagePath: 'assets/images/fertilize.png',
               value: fertilizerLevel,
               onChanged: onFertilizerChanged,
               width: buttonWidth,
@@ -92,7 +92,7 @@ class ActionButtonsWidget extends StatelessWidget {
                     ),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
+                    padding: const EdgeInsets.fromLTRB(2, 14, 2, 0),
                     child: Image.asset(
                       imagePath,
                       fit: BoxFit.contain, // Changed from cover to contain
@@ -136,7 +136,7 @@ class ActionButtonsWidget extends StatelessWidget {
             ),
           ),
           // Title banner positioned at top-left
-          Positioned(top: -8, left: 4, child: _buildTitleBanner(title)),
+          Positioned(top: -16, left: 4, child: _buildTitleBanner(title)),
         ],
       ),
     );

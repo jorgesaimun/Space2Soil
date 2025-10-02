@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'crop_selection_screen.dart';
+import 'settings_screen.dart';
+import 'help_screen.dart';
 
 class ModeSelectionScreen extends StatefulWidget {
-  const ModeSelectionScreen({super.key});
+  final String location;
+
+  const ModeSelectionScreen({Key? key, required this.location})
+    : super(key: key);
 
   @override
   State<ModeSelectionScreen> createState() => _ModeSelectionScreenState();
 }
 
 class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
-  final ImagePicker _picker = ImagePicker();
+  String selectedMode = 'career'; // default selection
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        width: double.infinity,
-        height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/background_img.png'),
@@ -26,96 +27,25 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           ),
         ),
         child: SafeArea(
-          child: Stack(
+          child: Column(
             children: [
-              // Main content container
-              Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.7,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF8B4513), // Wood brown
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFFD4A574),
-                      width: 3,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.4),
-                        blurRadius: 15,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // Title
-                        Text(
-                          'SELECT MODE',
-                          style: GoogleFonts.vt323(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFFD4A574),
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        
-                        // Mode buttons
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // Sandbox Mode Button
-                            _buildModeButton(
-                              title: 'SANDBOX',
-                              subtitle: 'Free Play',
-                              icon: Icons.play_circle_outline,
-                              gradientColors: const [
-                                Color(0xFF4CAF50),
-                                Color(0xFF2E7D32),
-                              ],
-                              onTap: () {
-                                _navigateToMode('sandbox');
-                              },
-                            ),
-                            
-                            // Classic Mode Button
-                            _buildModeButton(
-                              title: 'CLASSIC',
-                              subtitle: 'Challenge',
-                              icon: Icons.star,
-                              gradientColors: const [
-                                Color(0xFFFF9800),
-                                Color(0xFFE65100),
-                              ],
-                              onTap: () {
-                                _navigateToMode('classic');
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+              // Location Header
+              _buildLocationHeader(),
+
+              // Main Content
+              Expanded(
+                child: Stack(
+                  children: [
+                    // Left Sidebar
+                    _buildLeftSidebar(),
+
+                    // Center content with mode selection and next button
+                    _buildCenterContent(),
+
+                    // Character and Speech Bubble (Right side)
+                    _buildCharacterSection(),
+                  ],
                 ),
-              ),
-              
-              // Camera icon at top left corner
-              Positioned(
-                top: 20,
-                left: 20,
-                child: _buildCameraButton(),
-              ),
-              
-              // Back button at bottom left corner
-              Positioned(
-                bottom: 20,
-                left: 20,
-                child: _buildBackButton(),
               ),
             ],
           ),
@@ -124,26 +54,105 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     );
   }
 
-  Widget _buildModeButton({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required List<Color> gradientColors,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 160,
-        height: 120,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: gradientColors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+  Widget _buildLocationHeader() {
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.orange, width: 2),
+      ),
+      child: Row(
+        children: [
+          // Globe icon
+          Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              color: Colors.blue,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.public, color: Colors.white),
           ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black, width: 3),
+          const SizedBox(width: 12),
+          const Text(
+            'Your Location:',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.brown,
+            ),
+          ),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.orange,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              widget.location,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLeftSidebar() {
+    return Positioned(
+      left: 20,
+      top: 20,
+      child: Column(
+        children: [
+          _buildSidebarButton('assets/images/profile_icon.png', 'Profile', () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Profile screen coming soon!')),
+            );
+          }),
+          const SizedBox(height: 16),
+          _buildSidebarButton(
+            'assets/images/settings_icon.png',
+            'Settings',
+            () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          _buildSidebarButton('assets/images/questins_icon.png', 'Help', () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const HelpScreen()),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSidebarButton(
+    String imagePath,
+    String tooltip,
+    VoidCallback onPressed,
+  ) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: 60,
+        height: 60,
+        decoration: BoxDecoration(
+          color: Colors.orange,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 3),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.3),
@@ -152,122 +161,88 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
             ),
           ],
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Image.asset(imagePath, fit: BoxFit.contain),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCenterContent() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // Mode Selection
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Career Mode - Unlocked
+              GestureDetector(
+                onTap: () => setState(() => selectedMode = 'career'),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border:
+                        selectedMode == 'career'
+                            ? Border.all(color: Colors.green, width: 3)
+                            : null,
+                    //  borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Image.asset(
+                    'assets/images/unlocked.png',
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              // Creative Mode - Locked
+              GestureDetector(
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Creative Mode is locked!')),
+                  );
+                },
+                child: Image.asset(
+                  'assets/images/locked.png',
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // Next Button
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => CropSelectionScreen(
+                        detectedLocation: widget.location,
+                      ),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.purple,
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: GoogleFonts.vt323(
-                fontSize: 20,
+            child: const Text(
+              'NEXT',
+              style: TextStyle(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
-                letterSpacing: 1,
+                fontFamily: 'VT323',
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitle,
-              style: GoogleFonts.vt323(
-                fontSize: 14,
-                color: Colors.white70,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCameraButton() {
-    return GestureDetector(
-      onTap: _openCamera,
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF2196F3), Color(0xFF1976D2)],
-          ),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Icon(
-          Icons.camera_alt,
-          size: 30,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBackButton() {
-    return GestureDetector(
-      onTap: () => Navigator.pop(context),
-      child: Container(
-        width: 100,
-        height: 50,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
-          ),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.black, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            'BACK',
-            style: GoogleFonts.vt323(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: 1,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _navigateToMode(String mode) {
-    // TODO: Navigate to the selected game mode
-    // For now, just show a dialog
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Mode Selected',
-          style: GoogleFonts.vt323(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'You selected ${mode.toUpperCase()} mode!',
-          style: GoogleFonts.vt323(fontSize: 18),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(
-              'OK',
-              style: GoogleFonts.vt323(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -275,75 +250,46 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     );
   }
 
-  Future<void> _openCamera() async {
-    try {
-      print('Camera button tapped - starting camera process...');
-      
-      // Request camera permission
-      print('Requesting camera permission...');
-      final status = await Permission.camera.request();
-      print('Camera permission status: $status');
-      
-      if (status.isGranted) {
-        print('Camera permission granted - opening camera...');
-        // Open camera
-        final XFile? image = await _picker.pickImage(
-          source: ImageSource.camera,
-          imageQuality: 80,
-        );
-        
-        if (image != null) {
-          print('Image captured successfully: ${image.path}');
-          // Show success message
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Photo captured successfully!',
-                  style: GoogleFonts.vt323(fontSize: 16),
-                ),
-                backgroundColor: const Color(0xFF4CAF50),
-                duration: const Duration(seconds: 2),
-              ),
-            );
-          }
-          
-          // TODO: Process the captured image later
-          print('Image captured: ${image.path}');
-        } else {
-          print('No image captured - user cancelled or error occurred');
-        }
-      } else {
-        print('Camera permission denied: $status');
-        // Show permission denied message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Camera permission is required to take photos.',
-                style: GoogleFonts.vt323(fontSize: 16),
-              ),
-              backgroundColor: const Color(0xFFF44336),
-              duration: const Duration(seconds: 3),
+  Widget _buildCharacterSection() {
+    return Positioned(
+      right: 20,
+      top: 10,
+      // bottom: 00,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Speech Bubble
+          Container(
+            width: 200,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(color: Colors.black, width: 2),
             ),
-          );
-        }
-      }
-    } catch (e) {
-      print('Camera error: $e');
-      // Show error message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Error opening camera: $e',
-              style: GoogleFonts.vt323(fontSize: 16),
+            child: Text(
+              'In Career Mode you can only play with your own area, in Creative Mode, you can play on any',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.black,
+                fontFamily: 'VT323',
+              ),
+              textAlign: TextAlign.center,
             ),
-            backgroundColor: const Color(0xFFF44336),
-            duration: const Duration(seconds: 3),
           ),
-        );
-      }
-    }
+          const SizedBox(height: 8),
+          // Character
+          Container(
+            width: 100,
+            height: 100,
+            child: Image.asset(
+              'assets/images/farmer_img.png',
+              fit: BoxFit.contain,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

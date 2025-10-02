@@ -185,7 +185,9 @@ class FinalResultScreen extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ModeSelectionScreen(),
+                          builder:
+                              (context) =>
+                                  const ModeSelectionScreen(location: ''),
                         ),
                       );
                     },

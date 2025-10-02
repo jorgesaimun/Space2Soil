@@ -1,7 +1,7 @@
 import 'package:demo_game/widgets/earth_globe_section.dart';
 import 'package:demo_game/widgets/location_data_section.dart';
 import 'package:demo_game/widgets/loading_screen.dart';
-import 'package:demo_game/crop_selection_screen.dart';
+import 'package:demo_game/mode_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -223,8 +223,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (context) => CropSelectionScreen(
-                            detectedLocation: _locationName,
+                          (context) => ModeSelectionScreen(
+                            location: _locationName ?? 'Unknown Location',
                           ),
                     ),
                   );

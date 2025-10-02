@@ -16,7 +16,6 @@ class FarmerSectionWidget extends StatelessWidget {
         const SizedBox(height: 4),
         // Farmer character
         _buildFarmerCharacter(),
-        Spacer(),
       ],
     );
   }
@@ -45,12 +44,12 @@ class FarmerSectionWidget extends StatelessWidget {
     return Image.asset(
       'assets/images/farmer_img.png',
       width: 125,
-      height: 100,
+      height: 125,
       fit: BoxFit.fill,
       errorBuilder: (context, error, stackTrace) {
         return Container(
           width: 120,
-          height: 100,
+          height: 120,
           decoration: BoxDecoration(
             color: const Color(0xFF8D6E63),
             borderRadius: BorderRadius.circular(8),
