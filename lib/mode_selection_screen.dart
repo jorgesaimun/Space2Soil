@@ -56,51 +56,128 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   Widget _buildLocationHeader() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      // margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      height: 100,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.9),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.orange, width: 2),
+        image: const DecorationImage(
+          image: AssetImage('assets/images/map.png'),
+          fit: BoxFit.cover,
+        ),
+        // borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: const Color(0xFFFF8C00), width: 3),
       ),
-      child: Row(
-        children: [
-          // Globe icon
-          Container(
-            width: 40,
-            height: 40,
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.public, color: Colors.white),
-          ),
-          const SizedBox(width: 12),
-          const Text(
-            'Your Location:',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.brown,
-            ),
-          ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              widget.location,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 255, 220, 129),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            // Globe icon with map background
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Container(
+                width: 50,
+                height: 50,
+                decoration: const BoxDecoration(shape: BoxShape.circle),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/images/map.png',
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+
+            // Left section with "Your Location:" text
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFFF8C00), width: 2),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Your Location:',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8B4513), // Brown color
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // Orange play button in the middle
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+              width: 40,
+              height: 40,
+              decoration: const BoxDecoration(
+                color: Color(0xFFFF8C00), // Orange color
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.play_arrow,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+
+            // Right section with location name
+            Expanded(
+              flex: 2,
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFFFD700), width: 2),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    widget.location,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8B4513),
+                    ),
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 12),
+          ],
+        ),
       ),
     );
   }
@@ -229,7 +306,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.purple,
+              backgroundColor: const Color.fromARGB(255, 210, 154, 219),
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
@@ -240,7 +317,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
                 fontFamily: 'VT323',
               ),
             ),
@@ -282,7 +359,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
           // Character
           Container(
             width: 100,
-            height: 100,
+            height: 120,
             child: Image.asset(
               'assets/images/farmer_img.png',
               fit: BoxFit.contain,

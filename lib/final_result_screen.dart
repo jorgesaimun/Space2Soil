@@ -1,3 +1,4 @@
+import 'package:demo_game/unlocked_all_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'models/crop.dart';
@@ -186,8 +187,9 @@ class FinalResultScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder:
-                              (context) =>
-                                  const ModeSelectionScreen(location: ''),
+                              (context) => const UnlockedAllMode(
+                                location: 'Some Location',
+                              ),
                         ),
                       );
                     },
