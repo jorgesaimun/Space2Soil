@@ -84,6 +84,7 @@ class Crop {
 
     // Handle special cases and normalize the name
     String normalized = cropName.toLowerCase().trim();
+    print('Formatting crop name: "$cropName" -> normalized: "$normalized"');
 
     // Check for BRRI dhan patterns (BRRI dhan means rice)
     if (normalized.contains('brri') && normalized.contains('dhan')) {
@@ -112,19 +113,34 @@ class Crop {
       'lentil': 'Lentil',
       'mustard': 'Mustard',
       'tea': 'Tea',
+      // Jute mappings
       'jute': 'Jute',
+      'tossa jute': 'Jute',
+      'tossa': 'Jute',
+      'jute (tossa)': 'Jute',
+      // Brinjal mappings
+      'eggplant': 'Brinjal',
+      'brinjal': 'Brinjal',
+      'brinjal (eggplant)': 'Brinjal',
+      'egg plant': 'Brinjal',
+      'aubergine': 'Brinjal',
+      // Other mappings
       'cabbage': 'Cabbage',
       'cauliflower': 'Cauliflower',
-      'eggplant': 'Eggplant',
-      'brinjal': 'Eggplant', // Map brinjal to eggplant
+      'betel leaf': 'Betel_leaf',
+      'betel_leaf': 'Betel_leaf',
       'watermelon': 'Watermelon',
       'mango': 'Mango',
       'lemon': 'Lemon',
     };
 
     // Use special mapping if available, otherwise capitalize first letter
-    return specialMappings[normalized] ??
+    final result =
+        specialMappings[normalized] ??
         cropName[0].toUpperCase() + cropName.substring(1).toLowerCase();
+
+    print('Crop mapping result: "$cropName" -> "$result"');
+    return result;
   }
 }
 

@@ -1,4 +1,6 @@
 import 'package:demo_game/widgets/earth_globe_section.dart';
+import 'package:demo_game/help_screen.dart';
+import 'package:demo_game/crop_selection_screen.dart';
 import 'package:flutter/material.dart';
 
 class SelectLocationScreen extends StatefulWidget {
@@ -79,7 +81,15 @@ class _SelectLocationScreenState extends State<SelectLocationScreen>
                   child: EarthGlobeSection(
                     globeController: _globeController,
                     onNextPressed: () {
-                      // Navigation removed - button is inactive for now
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => CropSelectionScreen(
+                                detectedLocation: _locationName ?? 'CHITTAGONG',
+                              ),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -332,26 +342,34 @@ class CustomLocationDataSection extends StatelessWidget {
   Widget _buildHelpButton(BuildContext context) {
     return Align(
       alignment: Alignment.bottomRight,
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: const Color(0xFFFF8A50), // Orange background
-          shape: BoxShape.circle,
-          border: Border.all(color: const Color(0xFFD84315), width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HelpScreen()),
+          );
+        },
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0xFFFF8A50), // Orange background
+            shape: BoxShape.circle,
+            border: Border.all(color: const Color(0xFFD84315), width: 3),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Image(
+              image: AssetImage('assets/images/questions_icon.png'),
+              fit: BoxFit.contain,
             ),
-          ],
-        ),
-        child: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Image(
-            image: AssetImage('assets/images/questions_icon.png'),
-            fit: BoxFit.contain,
           ),
         ),
       ),

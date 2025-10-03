@@ -121,7 +121,7 @@ class CropSelectionPanel extends StatelessWidget {
                         children: [
                           const Icon(
                             Icons.image_not_supported,
-                            size: 40,
+                            size: 30,
                             color: Colors.grey,
                           ),
                           const SizedBox(height: 8),
