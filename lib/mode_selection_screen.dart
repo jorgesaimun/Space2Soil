@@ -173,7 +173,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
             },
           ),
           const SizedBox(height: 16),
-          _buildSidebarButton('assets/images/questins_icon.png', 'Help', () {
+          _buildSidebarButton('assets/images/questions_icon.png', 'Help', () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HelpScreen()),

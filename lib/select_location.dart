@@ -1,5 +1,4 @@
 import 'package:demo_game/widgets/earth_globe_section.dart';
-import 'package:demo_game/mode_selection_screen.dart';
 import 'package:flutter/material.dart';
 
 class SelectLocationScreen extends StatefulWidget {
@@ -80,15 +79,7 @@ class _SelectLocationScreenState extends State<SelectLocationScreen>
                   child: EarthGlobeSection(
                     globeController: _globeController,
                     onNextPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => ModeSelectionScreen(
-                                location: _locationName ?? 'Unknown Location',
-                              ),
-                        ),
-                      );
+                      // Navigation removed - button is inactive for now
                     },
                   ),
                 ),
@@ -124,55 +115,90 @@ class _SelectLocationScreenState extends State<SelectLocationScreen>
         child: Container(
           color: Colors.black.withOpacity(0.5),
           child: Center(
-            child: Container(
-              margin: const EdgeInsets.all(40),
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight:
+                    MediaQuery.of(context).size.height *
+                    0.7, // Max 70% of screen height
+                maxWidth:
+                    MediaQuery.of(context).size.width *
+                    0.8, // Max 80% of screen width
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'Select Division',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'monospace',
+              child: Container(
+                margin: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  ..._divisions.map(
-                    (division) => GestureDetector(
-                      onTap: () => _selectLocation(division),
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.only(bottom: 8),
-                        decoration: BoxDecoration(
-                          color:
-                              division == _locationName
-                                  ? Colors.blue
-                                  : Colors.grey[200],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          division,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'monospace',
-                            color:
-                                division == _locationName
-                                    ? Colors.white
-                                    : Colors.black,
-                          ),
-                          textAlign: TextAlign.center,
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Select Division',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children:
+                              _divisions
+                                  .map(
+                                    (division) => GestureDetector(
+                                      onTap: () => _selectLocation(division),
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 12,
+                                        ),
+                                        margin: const EdgeInsets.only(
+                                          bottom: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              division == _locationName
+                                                  ? Colors.blue
+                                                  : Colors.grey[200],
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          division,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'monospace',
+                                            fontWeight: FontWeight.bold,
+                                            color:
+                                                division == _locationName
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                  .toList(),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -324,7 +350,7 @@ class CustomLocationDataSection extends StatelessWidget {
         child: const Padding(
           padding: EdgeInsets.all(8.0),
           child: Image(
-            image: AssetImage('assets/images/questins_icon.png'),
+            image: AssetImage('assets/images/questions_icon.png'),
             fit: BoxFit.contain,
           ),
         ),

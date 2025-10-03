@@ -139,7 +139,7 @@ class LocationDataSection extends StatelessWidget {
           child: const Padding(
             padding: EdgeInsets.all(8.0),
             child: Image(
-              image: AssetImage('assets/images/questins_icon.png'),
+              image: AssetImage('assets/images/questions_icon.png'),
               // color: Colors.white, // White color for the icon
               fit: BoxFit.contain,
             ),

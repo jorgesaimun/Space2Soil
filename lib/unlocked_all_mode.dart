@@ -161,7 +161,7 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
               MaterialPageRoute(builder: (context) => const ProfileScreen()),
             );
           }),
-          const SizedBox(height: 16),
+          const SizedBox(height: 10),
           _buildSidebarButton(
             'assets/images/settings_icon.png',
             'Settings',
@@ -172,8 +172,14 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
               );
             },
           ),
-          const SizedBox(height: 16),
-          _buildSidebarButton('assets/images/questins_icon.png', 'Help', () {
+          const SizedBox(height: 10),
+          // add a camera button here
+          _buildSidebarButton('assets/images/camera_icon.png', 'Camera', () {
+            // Camera functionality to be implemented
+          }),
+
+          const SizedBox(height: 10),
+          _buildSidebarButton('assets/images/questions_icon.png', 'Help', () {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const HelpScreen()),
@@ -192,8 +198,8 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           color: Colors.orange,
           shape: BoxShape.circle,
