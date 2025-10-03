@@ -188,30 +188,8 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
                 ),
               ),
               const SizedBox(height: 10),
-              // Related items placeholder
-              Wrap(
-                alignment: WrapAlignment.center,
-                spacing: 8,
-                children: List.generate(4, (index) {
-                  return Container(
-                    width: 35,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFE0B2),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: const Color(0xFFD84315),
-                        width: 2,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.grass,
-                      color: Color(0xFF4CAF50),
-                      size: 18,
-                    ),
-                  );
-                }),
-              ),
+              // Related crops thumbnails
+              _buildRelatedCrops(),
             ],
           ),
         ),
@@ -325,6 +303,74 @@ class _CropDisplayWidgetState extends State<CropDisplayWidget>
           child: Icon(icon, color: Colors.white, size: 28),
         ),
       ),
+    );
+  }
+
+  /// Build related crops thumbnails
+  Widget _buildRelatedCrops() {
+    // Show up to 6 crops (excluding current crop or showing all available)
+    final displayCrops = widget.crops.take(6).toList();
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      children:
+          displayCrops.asMap().entries.map((entry) {
+            final index = entry.key;
+            final crop = entry.value;
+            final isCurrentCrop = index == _currentIndex;
+
+            return GestureDetector(
+              onTap: () {
+                // Switch to selected crop
+                _pageController.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: Container(
+                width: 35,
+                height: 35,
+                decoration: BoxDecoration(
+                  color:
+                      isCurrentCrop
+                          ? const Color(0xFF4CAF50).withOpacity(0.3)
+                          : const Color(0xFFFFE0B2),
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color:
+                        isCurrentCrop
+                            ? const Color(0xFF4CAF50)
+                            : const Color(0xFFD84315),
+                    width: 2,
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: Image.asset(
+                    crop.imagePath,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Fallback to crop initial letter if image fails
+                      return Center(
+                        child: Text(
+                          crop.name.isNotEmpty
+                              ? crop.name[0].toUpperCase()
+                              : '?',
+                          style: GoogleFonts.vt323(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF8B4513),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 }
