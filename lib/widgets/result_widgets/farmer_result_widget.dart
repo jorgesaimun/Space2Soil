@@ -30,11 +30,7 @@ class FarmerResultWidget extends StatelessWidget {
       child: Row(
         children: [
           // Lightbulb icon
-          const Icon(
-            Icons.lightbulb,
-            color: Colors.yellow,
-            size: 20,
-          ),
+          const Icon(Icons.lightbulb, color: Colors.yellow, size: 20),
           const SizedBox(width: 8),
           // Text message
           Expanded(
@@ -55,22 +51,18 @@ class FarmerResultWidget extends StatelessWidget {
   Widget _buildFarmerCharacter() {
     return Image.asset(
       'assets/images/farmer_img.png',
-      width: 80,
-      height: 80,
-      fit: BoxFit.contain,
+      width: 100,
+      height: 100,
+      fit: BoxFit.cover, // Changed to cover to fill the space completely
       errorBuilder: (context, error, stackTrace) {
         return Container(
-          width: 80,
-          height: 80,
+          width: 100,
+          height: 100,
           decoration: BoxDecoration(
             color: const Color(0xFF8D6E63),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: const Icon(
-            Icons.person,
-            color: Colors.white,
-            size: 40,
-          ),
+          child: const Icon(Icons.person, color: Colors.white, size: 40),
         );
       },
     );

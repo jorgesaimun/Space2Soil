@@ -56,7 +56,7 @@ class _ResultScreenState extends State<ResultScreen> {
         ),
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
             child: Row(
               children: [
                 // Left column: Calendar and Farmer
@@ -83,13 +83,12 @@ class _ResultScreenState extends State<ResultScreen> {
             currentMonth: widget.currentMonth,
             monthNumber: widget.monthNumber,
           ),
-          const SizedBox(height: 40),
-          // Left Bottom: Farmer with speech bubble
-          const Expanded(
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: FarmerResultWidget(),
-            ),
+          // Spacer to push farmer to bottom
+          const Expanded(child: SizedBox()),
+          // Left Bottom: Farmer with speech bubble positioned at bottom left
+          const Align(
+            alignment: Alignment.bottomLeft,
+            child: FarmerResultWidget(),
           ),
         ],
       ),
@@ -102,15 +101,19 @@ class _ResultScreenState extends State<ResultScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Right Center: Results panel without integrated Next button
+          // Spacer to center the results panel
+          const Spacer(),
+          // Right Center: Results panel
           ResultsPanelWidget(
             whatHappened: _whatHappened,
             why: _why,
             starRating: _starRating,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
           // Next button positioned below results panel
           _buildNextButton(),
+          // Bottom spacer
+          const Spacer(),
         ],
       ),
     );
@@ -119,53 +122,60 @@ class _ResultScreenState extends State<ResultScreen> {
   Widget _buildNextButton() {
     final isLastStage = widget.currentStage == widget.totalStages;
 
-    return GestureDetector(
-      onTap: () {
-        if (isLastStage) {
-          // Final stage - navigate to final result screen
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder:
-                  (context) => FinalResultScreen(
-                    selectedCrop: widget.selectedCrop,
-                    irrigationLevel: widget.irrigationLevel,
-                    fertilizerLevel: widget.fertilizerLevel,
-                    pesticideLevel: widget.pesticideLevel,
-                    division: widget.division,
-                  ),
-            ),
-          );
-        } else {
-          // Not final stage - advance stage and return to cultivation
-          widget.onStageAdvance();
-          Navigator.pop(context); // Pop result screen (cloud was replaced)
-        }
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: Colors.black, width: 3),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.3),
-              blurRadius: 6,
-              offset: const Offset(0, 3),
-            ),
-          ],
+    return Container(
+      width: 120,
+      height: 50,
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF9C7FB8), Color(0xFF7B68B1)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-        child: Text(
-          isLastStage ? 'FINISH' : 'NEXT',
-          style: GoogleFonts.vt323(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.black, width: 3),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 6,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(25),
+          onTap: () {
+            if (isLastStage) {
+              // Final stage - navigate to final result screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) => FinalResultScreen(
+                        selectedCrop: widget.selectedCrop,
+                        irrigationLevel: widget.irrigationLevel,
+                        fertilizerLevel: widget.fertilizerLevel,
+                        pesticideLevel: widget.pesticideLevel,
+                        division: widget.division,
+                      ),
+                ),
+              );
+            } else {
+              // Not final stage - advance stage and return to cultivation
+              widget.onStageAdvance();
+              Navigator.pop(context); // Pop result screen (cloud was replaced)
+            }
+          },
+          child: Center(
+            child: Text(
+              isLastStage ? 'FINISH' : 'NEXT',
+              style: GoogleFonts.vt323(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ),
