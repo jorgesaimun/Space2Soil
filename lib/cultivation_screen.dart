@@ -8,6 +8,7 @@ import 'widgets/cultivation_widgets/seed_panel_widget.dart';
 import 'widgets/cultivation_widgets/action_buttons_widget.dart';
 import 'widgets/cultivation_widgets/environmental_data_widget.dart';
 import 'widgets/cultivation_widgets/done_button_widget.dart';
+import 'widgets/cultivation_widgets/coin_widget.dart';
 
 class CultivationScreen extends StatefulWidget {
   final Crop selectedCrop;
@@ -34,6 +35,9 @@ class _CultivationScreenState extends State<CultivationScreen> {
   double _stock = 90.0;
   double _smap = 75.0;
   String _ndvi = '№10';
+
+  // Coin system
+  int _currentCoins = 230;
 
   // Action sliders
   double _irrigationLevel = 0.4;
@@ -258,9 +262,8 @@ class _CultivationScreenState extends State<CultivationScreen> {
       }
     }
 
-    // Temperature can vary slightly with month (optional enhancement)
-    // For now, keep it relatively stable but could add seasonal variation
-    _stock = 90.0; // Could be made month-dependent in future
+    // Stock value is now calculated dynamically in _updateCoinAndStock()
+    // No longer overriding stock value here
   }
 
   /// Extract months from cultivation period in correct chronological order
@@ -433,8 +436,27 @@ class _CultivationScreenState extends State<CultivationScreen> {
         _advanceToNextMonth();
 
         _updateCalendarAndEnvironmentalData();
+
+        // Update coin and stock values AFTER other updates
+        _updateCoinAndStock();
       });
     }
+  }
+
+  /// Update coin and stock values based on stage progression
+  void _updateCoinAndStock() {
+    final oldCoins = _currentCoins;
+    final oldStock = _stock;
+
+    // Reduce coins by 5% each stage (rounded to whole number)
+    _currentCoins = (_currentCoins * 0.95).round();
+
+    // Reduce stock by 3% each stage (rounded to whole number)
+    _stock = (_stock * 0.97).round().toDouble();
+
+    print(
+      'Stage $_currentStage: Coins $oldCoins → $_currentCoins, Stock $oldStock → $_stock',
+    );
   }
 
   /// Advance to the next month in cultivation sequence
@@ -525,12 +547,22 @@ class _CultivationScreenState extends State<CultivationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Calendar widget - fixed height
+            // Top widgets row: Calendar and Coin
             SizedBox(
               height: constraints.maxHeight * 0.25, // 25% of screen height
-              child: CalendarWidget(
-                currentMonth: _currentMonth,
-                monthNumber: _monthNumber,
+              child: Row(
+                children: [
+                  // Calendar widget
+                  Expanded(
+                    child: CalendarWidget(
+                      currentMonth: _currentMonth,
+                      monthNumber: _monthNumber,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Coin widget
+                  CoinWidget(coinCount: _currentCoins),
+                ],
               ),
             ),
             // Spacer to push farmer to bottom
