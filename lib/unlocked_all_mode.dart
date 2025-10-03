@@ -324,16 +324,16 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
 
   Widget _buildCharacterSection() {
     return Positioned(
-      right: 20,
-      top: 80,
+      right: 0, // Remove right padding
+      bottom: 0, // Position at bottom
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           // Speech Bubble
           Container(
-            width: 180,
+            width: 200,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -341,20 +341,18 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
               border: Border.all(color: Colors.black, width: 2),
             ),
             child: Text(
-              'Congratulations! You have unlocked all modes!',
-              style: GoogleFonts.vt323(fontSize: 14, color: Colors.black),
+              'Congrats on finishing your location! In Creative Mode you can play as anywhere you want',
+              style: GoogleFonts.vt323(fontSize: 12, color: Colors.black),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 6),
-          // Character
-          Container(
-            width: 80,
-            height: 100,
-            child: Image.asset(
-              'assets/images/farmer_img.png',
-              fit: BoxFit.contain,
-            ),
+          // Character - positioned at bottom right with no padding
+          Image.asset(
+            'assets/images/farmer_right.png',
+            width: 160,
+            height: 140,
+            fit: BoxFit.cover, // Use cover to fill space and connect to bottom
           ),
         ],
       ),

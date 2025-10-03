@@ -152,7 +152,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
   Widget _buildLeftSidebar() {
     return Positioned(
       left: 20,
-      top: 20,
+      top: 50,
       child: Column(
         children: [
           _buildSidebarButton('assets/images/profile_icon.png', 'Profile', () {
@@ -192,8 +192,8 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         decoration: BoxDecoration(
           color: Colors.orange,
           shape: BoxShape.circle,
@@ -309,8 +309,8 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
 
   Widget _buildCharacterSection() {
     return Positioned(
-      right: 10,
-      bottom: 20,
+      right: 0, // Remove right padding
+      bottom: 0, // Remove bottom padding
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -326,19 +326,17 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
             ),
             child: Text(
               'In Career Mode you can only play with your own area, in Creative Mode, you can play on any',
-              style: GoogleFonts.vt323(fontSize: 14, color: Colors.black),
+              style: GoogleFonts.vt323(fontSize: 12, color: Colors.black),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 6),
-          // Character
-          Container(
-            width: 90,
-            height: 110,
-            child: Image.asset(
-              'assets/images/farmer_img.png',
-              fit: BoxFit.contain,
-            ),
+          // Character - positioned at bottom right with no padding
+          Image.asset(
+            'assets/images/farmer_right.png',
+            width: 160,
+            height: 120,
+            fit: BoxFit.cover, // Use cover to fill space and connect to bottom
           ),
         ],
       ),

@@ -42,8 +42,8 @@ class FarmerSectionWidget extends StatelessWidget {
 
   Widget _buildFarmerCharacter() {
     return Image.asset(
-      'assets/images/farmer_img.png',
-      width: 125,
+      'assets/images/farmer_left.png',
+      width: 150,
       height: 125,
       fit: BoxFit.fill,
       errorBuilder: (context, error, stackTrace) {
