@@ -1,5 +1,6 @@
 import 'package:demo_game/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'crop_selection_screen.dart';
 import 'creative_mode_animation.dart';
 import 'settings_screen.dart';
@@ -57,128 +58,93 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
 
   Widget _buildLocationHeader() {
     return Container(
-      // margin: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      height: 100,
-      decoration: BoxDecoration(
-        image: const DecorationImage(
-          image: AssetImage('assets/images/map.png'),
-          fit: BoxFit.cover,
+      height: 80,
+      decoration: const BoxDecoration(
+        color: Color(0xFFFFD700), // Gold/Yellow background
+        border: Border(
+          top: BorderSide(color: Color(0xFFFF6600), width: 4),
+          bottom: BorderSide(color: Color(0xFFFF6600), width: 4),
         ),
-        // borderRadius: BorderRadius.circular(15),
-        border: Border.all(color: const Color(0xFFFF8C00), width: 3),
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 255, 220, 129),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            // Globe icon with map background
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Container(
-                width: 50,
-                height: 50,
-                decoration: const BoxDecoration(shape: BoxShape.circle),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/map.png',
-                    fit: BoxFit.cover,
+      child: Row(
+        children: [
+          // Globe icon with map background
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Container(
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(shape: BoxShape.circle),
+              child: ClipOval(
+                child: Image.asset('assets/images/map.png', fit: BoxFit.cover),
+              ),
+            ),
+          ),
+
+          // Left section with "Your Location:" text
+          Expanded(
+            flex: 2,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6F3FF), // Light blue background
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: const Color(0xFF4A90E2), width: 2),
+              ),
+              child: Center(
+                child: Text(
+                  'Your Location:',
+                  style: GoogleFonts.vt323(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
               ),
             ),
+          ),
 
-            // Left section with "Your Location:" text
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFFF8C00), width: 2),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Your Location:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF8B4513), // Brown color
-                    ),
+          // Orange play button in the middle
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFF6600), // Orange color
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.play_arrow, color: Colors.white, size: 24),
+          ),
+
+          // Right section with location name
+          Expanded(
+            flex: 2,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE6F3FF), // Light blue background
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: const Color(0xFF4A90E2), width: 2),
+              ),
+              child: Center(
+                child: Text(
+                  widget.location,
+                  style: GoogleFonts.vt323(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),
+          ),
 
-            // Orange play button in the middle
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8),
-              width: 40,
-              height: 40,
-              decoration: const BoxDecoration(
-                color: Color(0xFFFF8C00), // Orange color
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.play_arrow,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-
-            // Right section with location name
-            Expanded(
-              flex: 2,
-              child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFFFD700), width: 2),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    widget.location,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF8B4513),
-                    ),
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(width: 12),
-          ],
-        ),
+          const SizedBox(width: 12),
+        ],
       ),
     );
   }
@@ -342,11 +308,10 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
               child: Center(
                 child: Text(
                   'NEXT',
-                  style: TextStyle(
+                  style: GoogleFonts.vt323(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
-                    fontFamily: 'VT323',
                   ),
                 ),
               ),
@@ -377,11 +342,7 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
             ),
             child: Text(
               'Congratulations! You have unlocked all modes!',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.black,
-                fontFamily: 'VT323',
-              ),
+              style: GoogleFonts.vt323(fontSize: 14, color: Colors.black),
               textAlign: TextAlign.center,
             ),
           ),
