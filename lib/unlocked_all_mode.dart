@@ -283,7 +283,10 @@ class _UnlockedAllModeState extends State<UnlockedAllMode> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CreativeModeAnimationScreen(),
+                    builder:
+                        (context) => CreativeModeAnimationScreen(
+                          currentLocation: widget.location,
+                        ),
                   ),
                 );
               }

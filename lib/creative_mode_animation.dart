@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'select_location.dart';
 
 class CreativeModeAnimationScreen extends StatefulWidget {
-  const CreativeModeAnimationScreen({super.key});
+  final String currentLocation;
+
+  const CreativeModeAnimationScreen({super.key, required this.currentLocation});
 
   @override
   State<CreativeModeAnimationScreen> createState() =>
@@ -66,7 +68,10 @@ class _CreativeModeAnimationScreenState
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => const SelectLocationScreen(),
+                builder:
+                    (context) => SelectLocationScreen(
+                      currentLocation: widget.currentLocation,
+                    ),
               ),
             );
           }
