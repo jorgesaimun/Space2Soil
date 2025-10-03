@@ -61,7 +61,12 @@ class SeedPanelWidget extends StatelessWidget {
                   // Stage image - taking most of the space
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 12.0),
+                      padding: const EdgeInsets.fromLTRB(
+                        12.0,
+                        20.0,
+                        12.0,
+                        12.0,
+                      ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: StageImageWidget(
@@ -103,7 +108,7 @@ class SeedPanelWidget extends StatelessWidget {
 
   BoxDecoration _buildPanelDecoration() {
     return BoxDecoration(
-      color: const Color(0xFFF5EFE4),
+      color: Colors.white,
       borderRadius: BorderRadius.circular(12),
       border: Border.all(color: const Color(0xFF795548), width: 4),
       boxShadow: [
