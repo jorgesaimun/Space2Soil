@@ -15,24 +15,78 @@ class StageImageWidget extends StatelessWidget {
     return _buildImageWithFallback();
   }
 
+  /// Maps database crop names to image folder names
+  String _getNormalizedCropType() {
+    final cropLower = cropType.toLowerCase().trim();
+
+    // Rice varieties mapping
+    if (cropLower.contains('brri') || cropLower.contains('dhan')) {
+      return 'rice';
+    }
+
+    // Direct mappings for crops that match folder names
+    final directMappings = {
+      'banana': 'banana',
+      'brinjal': 'brinjal',
+      'eggplant': 'brinjal',
+      'jute': 'jute',
+      'tossa': 'jute',
+      'lentil': 'lentil',
+      'mango': 'mango',
+      'wheat': 'wheat',
+      'maize': 'maize',
+      'mustard': 'mustard',
+      'potato': 'potato',
+      'betel leaf': 'betel_leaf',
+      'lemon': 'lemon',
+      'tea': 'tea',
+      'chili': 'chili',
+      'watermelon': 'watermelon',
+      'tomato': 'tomato',
+    };
+
+    // Check for direct matches
+    for (String key in directMappings.keys) {
+      if (cropLower.contains(key)) {
+        return directMappings[key]!;
+      }
+    }
+
+    // Default fallback
+    return cropType.toLowerCase();
+  }
+
   Widget _buildImageWithFallback() {
-    // Candidate filenames per stage (robust to different naming styles)
+    final normalizedCropType = _getNormalizedCropType();
+
+    // Candidate filenames per stage (including new crop_ naming convention)
     final List<String> candidates = [
-      'assets/images/$cropType/$currentStage.png',
-      'assets/images/$cropType/stage$currentStage.png',
-      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.png',
+      // New naming convention
+      'assets/images/$normalizedCropType/crop_$currentStage.png',
+      'assets/images/$normalizedCropType/crop_$currentStage.PNG',
+      'assets/images/$normalizedCropType/crop_$currentStage.jpg',
+      'assets/images/$normalizedCropType/crop_$currentStage.jpeg',
+
+      // Existing naming conventions
+      'assets/images/$normalizedCropType/$currentStage.png',
+      'assets/images/$normalizedCropType/stage$currentStage.png',
+      if (currentStage < 10)
+        'assets/images/$normalizedCropType/0$currentStage.png',
       // .PNG
-      'assets/images/$cropType/$currentStage.PNG',
-      'assets/images/$cropType/stage$currentStage.PNG',
-      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.PNG',
+      'assets/images/$normalizedCropType/$currentStage.PNG',
+      'assets/images/$normalizedCropType/stage$currentStage.PNG',
+      if (currentStage < 10)
+        'assets/images/$normalizedCropType/0$currentStage.PNG',
       // .jpg
-      'assets/images/$cropType/$currentStage.jpg',
-      'assets/images/$cropType/stage$currentStage.jpg',
-      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.jpg',
+      'assets/images/$normalizedCropType/$currentStage.jpg',
+      'assets/images/$normalizedCropType/stage$currentStage.jpg',
+      if (currentStage < 10)
+        'assets/images/$normalizedCropType/0$currentStage.jpg',
       // .jpeg
-      'assets/images/$cropType/$currentStage.jpeg',
-      'assets/images/$cropType/stage$currentStage.jpeg',
-      if (currentStage < 10) 'assets/images/$cropType/0$currentStage.jpeg',
+      'assets/images/$normalizedCropType/$currentStage.jpeg',
+      'assets/images/$normalizedCropType/stage$currentStage.jpeg',
+      if (currentStage < 10)
+        'assets/images/$normalizedCropType/0$currentStage.jpeg',
     ];
 
     // Fallback images based on stage

@@ -84,10 +84,12 @@ flutter:
     - assets/images/mango/
     - assets/images/lentil/
     - assets/images/wheat/
-    - assets/images/cabbage/
     - assets/images/maize/
     - assets/images/mustard/
-    
+    - assets/images/brinjal/
+    - assets/images/betel_leaf/
+    - assets/images/watermelon/
+
     - assets/audios/
 
   #   - images/a_dot_ham.jpeg
