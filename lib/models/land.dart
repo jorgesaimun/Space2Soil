@@ -12,6 +12,11 @@ class Land {
   // Calculate area in square feet
   int get area => length * width;
 
+  // Calculate area in square meters (1 sq ft = 0.092903 sq m)
+  double areaInSquareMeters() {
+    return area * 0.092903;
+  }
+
   // Get display text for dimensions
   String get dimensionsText => '${length}ft × ${width}ft';
 

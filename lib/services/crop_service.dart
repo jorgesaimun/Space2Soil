@@ -78,15 +78,54 @@ class CropService {
     required String crop,
   }) async {
     try {
-      final response = await _supabase
+      print(
+        '🔍 getCropDetails called with division: "$division", crop: "$crop"',
+      );
+
+      // First try exact match
+      var response = await _supabase
           .from('soil2space_crop_data')
-          .select('cultivation_period, smap, ndvi')
+          .select('cultivation_period, smap, ndvi, stock')
           .eq('division', division)
           .eq('crop', crop);
 
+      print('📊 Exact match returned ${response.length} results');
+
+      if (response.isEmpty) {
+        print('🔄 Trying case-insensitive search...');
+        // Try case-insensitive search if exact match fails
+        response = await _supabase
+            .from('soil2space_crop_data')
+            .select('cultivation_period, smap, ndvi, stock')
+            .ilike('division', division)
+            .ilike('crop', crop);
+
+        print('📊 Case-insensitive search returned ${response.length} results');
+      }
+
+      if (response.isEmpty) {
+        print('🔄 Trying partial match for division...');
+        // Try partial division match with exact crop
+        response = await _supabase
+            .from('soil2space_crop_data')
+            .select('cultivation_period, smap, ndvi, stock')
+            .ilike('division', '%$division%')
+            .ilike('crop', crop);
+
+        print('📊 Partial division match returned ${response.length} results');
+      }
+
+      // Log the found data
+      if (response.isNotEmpty) {
+        final stockValue = response[0]['stock'];
+        print('✅ Found stock value: $stockValue');
+      } else {
+        print('❌ No data found for $crop in $division');
+      }
+
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      print('Error fetching crop details for $crop in $division: $e');
+      print('❌ Error fetching crop details for $crop in $division: $e');
       rethrow;
     }
   }

@@ -21,7 +21,7 @@ class EnvironmentalDataWidget extends StatelessWidget {
         _buildDataCard(
           title: 'STOCK',
           icon: _buildCustomIcon('assets/images/stock.png'),
-          value: '90', // Hardcoded value as requested
+          value: '${stock.toInt()}',
         ),
         const SizedBox(height: 15),
         _buildDataCard(

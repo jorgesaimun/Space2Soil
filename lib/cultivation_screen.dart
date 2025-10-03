@@ -32,7 +32,8 @@ class _CultivationScreenState extends State<CultivationScreen> {
   late int _totalStages;
 
   // Environmental data - dynamic from database
-  double _stock = 90.0;
+  double _stock = 90.0; // Will be calculated from database + land size
+  double _baseStockValue = 0.0; // Database stock value per sq meter
   double _smap = 75.0;
   String _ndvi = '№10';
 
@@ -53,6 +54,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
   int _currentMonthIndex = 0;
   Map<String, dynamic>? _smapData;
   Map<String, dynamic>? _ndviData;
+  Map<String, dynamic>? _stockData;
   bool _isLoadingData = true;
 
   // Updated crop with correct cultivation period
@@ -64,8 +66,17 @@ class _CultivationScreenState extends State<CultivationScreen> {
   @override
   void initState() {
     super.initState();
+    print('🚀 CultivationScreen initState called');
+    print('   Initial _stock value: $_stock');
+    print('   Division: ${widget.division}');
+    print('   Crop: ${widget.selectedCrop.name}');
+    print(
+      '   Land size: ${widget.selectedLand.areaInSquareMeters()} sq meters',
+    );
     _totalStages = _getTotalStagesForCrop();
     _loadCultivationData();
+    _fetchAndCalculateStock();
+    print('🚀 CultivationScreen initState completed');
   }
 
   /// Normalize crop name to asset folder name
@@ -134,9 +145,10 @@ class _CultivationScreenState extends State<CultivationScreen> {
       if (cropDetails.isNotEmpty) {
         final data = cropDetails.first;
 
-        // Extract SMAP and NDVI data
+        // Extract SMAP, NDVI and Stock data
         _smapData = data['smap'] as Map<String, dynamic>?;
         _ndviData = data['ndvi'] as Map<String, dynamic>?;
+        _stockData = data['stock'] as Map<String, dynamic>?;
 
         // Extract cultivation months from database cultivation_period
         // Use the actual cultivation_period field to get the correct month sequence
@@ -194,6 +206,84 @@ class _CultivationScreenState extends State<CultivationScreen> {
       setState(() {
         _isLoadingData = false;
       });
+    }
+  }
+
+  /// Fetch stock value from database and calculate with land size
+  Future<void> _fetchAndCalculateStock() async {
+    print('🔍 _fetchAndCalculateStock called');
+    print('   Division: ${widget.division}');
+    print('   Crop: ${widget.selectedCrop.name}');
+    print('   Land: ${widget.selectedLand.areaInSquareMeters()} sq meters');
+
+    if (widget.division == null) {
+      print('❌ No division provided, using default stock value');
+      return;
+    }
+
+    try {
+      // Fetch stock data from database
+      final cropDetails = await CropService.getCropDetails(
+        division: widget.division!,
+        crop: widget.selectedCrop.name,
+      );
+
+      print('📊 Database response: ${cropDetails.length} records found');
+      if (cropDetails.isNotEmpty) {
+        print('   Raw stock data: ${cropDetails[0]['stock']}');
+      }
+
+      if (cropDetails.isNotEmpty && cropDetails[0]['stock'] != null) {
+        // Stock data is stored monthly like SMAP/NDVI: {Jul: [0.45, 1], Aug: [0.45, 3], ...}
+        final stockData = cropDetails[0]['stock'] as Map<String, dynamic>;
+
+        // Extract base stock value from first available month (use first value in array)
+        if (stockData.isNotEmpty) {
+          final firstMonth = stockData.keys.first;
+          final stockValues = stockData[firstMonth] as List<dynamic>;
+          _baseStockValue = (stockValues[0] as num).toDouble();
+
+          print(
+            '📊 Extracted stock data from month "$firstMonth": $_baseStockValue',
+          );
+        } else {
+          throw Exception('Stock data is empty');
+        }
+
+        // Calculate stock: database_value × land_area_in_sq_meters
+        final landAreaSqMeters = widget.selectedLand.areaInSquareMeters();
+        final calculatedStock = _baseStockValue * landAreaSqMeters;
+
+        setState(() {
+          _stock = calculatedStock;
+        });
+
+        print('✅ Stock calculation successful:');
+        print('   - Base stock value: $_baseStockValue per sq meter');
+        print('   - Land area: $landAreaSqMeters sq meters');
+        print('   - Calculated stock: $calculatedStock');
+        print('   - Final _stock value: $_stock');
+      } else {
+        print(
+          '❌ No stock data found in database for ${widget.selectedCrop.name} in ${widget.division}',
+        );
+        // Use fallback calculation: assume 10 stock per sq meter if no data found
+        _baseStockValue = 10.0;
+        final landAreaSqMeters = widget.selectedLand.areaInSquareMeters();
+        final fallbackStock = _baseStockValue * landAreaSqMeters;
+
+        setState(() {
+          _stock = fallbackStock;
+        });
+
+        print('🔧 Using fallback stock calculation:');
+        print('   - Fallback base stock: $_baseStockValue per sq meter');
+        print('   - Land area: $landAreaSqMeters sq meters');
+        print('   - Fallback calculated stock: $fallbackStock');
+      }
+    } catch (e) {
+      print('❌ Error fetching stock data: $e');
+      // Keep default stock value on error
     }
   }
 
@@ -262,8 +352,28 @@ class _CultivationScreenState extends State<CultivationScreen> {
       }
     }
 
-    // Stock value is now calculated dynamically in _updateCoinAndStock()
-    // No longer overriding stock value here
+    // Update Stock base value from database for current month
+    if (_stockData != null && _stockData!.containsKey(month)) {
+      final stockValues = _stockData![month] as List<dynamic>;
+      if (stockValues.isNotEmpty) {
+        // Update base stock value for current month
+        final monthlyBaseStock = (stockValues[0] as num).toDouble();
+        _baseStockValue = monthlyBaseStock;
+
+        // Recalculate stock with new base value and current land area
+        final landAreaSqMeters = widget.selectedLand.areaInSquareMeters();
+        final newCalculatedStock = _baseStockValue * landAreaSqMeters;
+
+        // Only update if this is a fresh calculation (not mid-cultivation)
+        if (_currentStage == 1) {
+          _stock = newCalculatedStock;
+        }
+
+        print(
+          '📊 Updated stock for month $month: base=$_baseStockValue, calculated=$newCalculatedStock',
+        );
+      }
+    }
   }
 
   /// Extract months from cultivation period in correct chronological order
@@ -451,11 +561,11 @@ class _CultivationScreenState extends State<CultivationScreen> {
     // Reduce coins by 5% each stage (rounded to whole number)
     _currentCoins = (_currentCoins * 0.95).round();
 
-    // Reduce stock by 3% each stage (rounded to whole number)
-    _stock = (_stock * 0.97).round().toDouble();
+    // Reduce stock by 3% each stage from the calculated base value
+    _stock = (_stock * 0.97);
 
     print(
-      'Stage $_currentStage: Coins $oldCoins → $_currentCoins, Stock $oldStock → $_stock',
+      '📈 Stage $_currentStage: Coins $oldCoins → $_currentCoins, Stock ${oldStock.toStringAsFixed(2)} → ${_stock.toStringAsFixed(2)} (base: $_baseStockValue per sq meter)',
     );
   }
 
