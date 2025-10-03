@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EnvironmentalDataWidget extends StatelessWidget {
-  final double temperature;
+  final double stock;
   final double smap;
   final String ndvi;
 
   const EnvironmentalDataWidget({
     super.key,
-    required this.temperature,
+    required this.stock,
     required this.smap,
     required this.ndvi,
   });
@@ -19,23 +19,43 @@ class EnvironmentalDataWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         _buildDataCard(
-          title: 'TEMPERATURE',
-          icon: const Icon(Icons.thermostat, color: Colors.red, size: 40),
-          value: '${temperature.toInt()}°C',
+          title: 'STOCK',
+          icon: _buildCustomIcon('assets/images/stock.png'),
+          value: '90', // Hardcoded value as requested
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         _buildDataCard(
           title: 'SMAP',
-          icon: const Icon(Icons.water_drop, color: Colors.blue, size: 40),
+          icon: _buildCustomIcon('assets/images/smap.png'),
           value: '${smap.toInt()}%',
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 15),
         _buildDataCard(
           title: 'NDVI',
-          icon: const Icon(Icons.check, color: Colors.green, size: 40),
+          icon: _buildCustomIcon('assets/images/ndvi.png'),
           value: ndvi,
         ),
       ],
+    );
+  }
+
+  Widget _buildCustomIcon(String assetPath) {
+    return Image.asset(
+      assetPath,
+      width: 40,
+      height: 40,
+      fit: BoxFit.contain,
+      errorBuilder: (context, error, stackTrace) {
+        // Fallback to Flutter icons if asset not found
+        if (assetPath.contains('stock')) {
+          return const Icon(Icons.inventory, color: Colors.red, size: 40);
+        } else if (assetPath.contains('smap')) {
+          return const Icon(Icons.water_drop, color: Colors.blue, size: 40);
+        } else if (assetPath.contains('ndvi')) {
+          return const Icon(Icons.eco, color: Colors.green, size: 40);
+        }
+        return const Icon(Icons.error, color: Colors.grey, size: 40);
+      },
     );
   }
 

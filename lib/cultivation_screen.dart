@@ -31,7 +31,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
   late int _totalStages;
 
   // Environmental data - dynamic from database
-  double _temperature = 33.0;
+  double _stock = 90.0;
   double _smap = 75.0;
   String _ndvi = '№10';
 
@@ -260,7 +260,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
 
     // Temperature can vary slightly with month (optional enhancement)
     // For now, keep it relatively stable but could add seasonal variation
-    _temperature = 33.0; // Could be made month-dependent in future
+    _stock = 90.0; // Could be made month-dependent in future
   }
 
   /// Extract months from cultivation period in correct chronological order
@@ -606,7 +606,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
             Expanded(
               flex: 3,
               child: EnvironmentalDataWidget(
-                temperature: _temperature,
+                stock: _stock,
                 smap: _smap,
                 ndvi: _ndvi,
               ),
