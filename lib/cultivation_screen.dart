@@ -482,35 +482,37 @@ class _CultivationScreenState extends State<CultivationScreen> {
             fit: BoxFit.cover,
           ),
         ),
-        child: SafeArea(
-          child:
-              _isLoadingData
-                  ? const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
-                    ),
-                  )
-                  : LayoutBuilder(
-                    builder: (context, constraints) {
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Left column: Calendar, Speech bubble, Farmer
-                            _buildLeftColumn(constraints),
-                            const SizedBox(width: 8),
-                            // Center column: Seed image, Action buttons
-                            _buildCenterColumn(constraints),
-                            const SizedBox(width: 8),
-                            // Right column: Environmental data, Done button
-                            _buildRightColumn(constraints),
-                          ],
-                        ),
-                      );
-                    },
+        child:
+            _isLoadingData
+                ? const Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
                   ),
-        ),
+                )
+                : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                        top: 12.0,
+                        left: 12.0,
+                        right: 12.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Left column: Calendar, Speech bubble, Farmer
+                          _buildLeftColumn(constraints),
+                          const SizedBox(width: 8),
+                          // Center column: Seed image, Action buttons
+                          _buildCenterColumn(constraints),
+                          const SizedBox(width: 8),
+                          // Right column: Environmental data, Done button
+                          _buildRightColumn(constraints),
+                        ],
+                      ),
+                    );
+                  },
+                ),
       ),
     );
   }
@@ -519,7 +521,7 @@ class _CultivationScreenState extends State<CultivationScreen> {
     return Expanded(
       flex: 3,
       child: SizedBox(
-        height: constraints.maxHeight - 24, // Account for padding
+        height: constraints.maxHeight, // Use full height
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -531,9 +533,10 @@ class _CultivationScreenState extends State<CultivationScreen> {
                 monthNumber: _monthNumber,
               ),
             ),
-            const SizedBox(height: 10),
-            // Farmer section - remaining space
-            Expanded(child: FarmerSectionWidget(cropName: currentCrop.name)),
+            // Spacer to push farmer to bottom
+            const Expanded(child: SizedBox()),
+            // Farmer section - positioned at bottom with no margin
+            FarmerSectionWidget(cropName: currentCrop.name),
           ],
         ),
       ),

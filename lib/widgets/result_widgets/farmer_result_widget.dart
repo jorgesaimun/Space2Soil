@@ -50,14 +50,14 @@ class FarmerResultWidget extends StatelessWidget {
 
   Widget _buildFarmerCharacter() {
     return Image.asset(
-      'assets/images/farmer_img.png',
+      'assets/images/farmer_left.png',
       width: 100,
-      height: 100,
+      height: 120,
       fit: BoxFit.cover, // Changed to cover to fill the space completely
       errorBuilder: (context, error, stackTrace) {
         return Container(
           width: 100,
-          height: 100,
+          height: 120,
           decoration: BoxDecoration(
             color: const Color(0xFF8D6E63),
             borderRadius: BorderRadius.circular(8),
