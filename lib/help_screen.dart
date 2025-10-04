@@ -62,7 +62,7 @@ class HelpScreen extends StatelessWidget {
                                   'To provide accurate farming insights, Space2Soil uses your device\'s location to access NASA\'s climate and soil data specific to your region. Granting permission ensures that the game can simulate real conditions for your crops. Without location access, certain features may not work properly.',
                                   style: GoogleFonts.vt323(
                                     fontSize: 18, // Slightly smaller font
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     height: 1.3, // Reduced line height
                                   ),
                                   textAlign: TextAlign.center,
