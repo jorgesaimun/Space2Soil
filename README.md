@@ -7,7 +7,7 @@ A cross-## Overview
 
 ## Downloads & Documentation
 
-📱 **[Download APK](https://drive.google.com/file/d/1SD1cumN8DyJxbtc0yk7IuEI6IvoZCt_o/view?usp=drive_link)** - Get the latest Android version
+📱 **[Download APK](https://drive.google.com/drive/folders/1QdZeHxuGBeU1e4xIKe4kf62864Ytgbqs?usp=drive_link)** - Get the latest Android version
 
 📚 **[Detailed Documentation](https://drive.google.com/drive/folders/14n7YMRyei5zy6ofnttroO1gog66ptImf?usp=drive_link)** - Complete project documentation and resources
 
