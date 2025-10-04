@@ -1,6 +1,17 @@
 # Space2Soil
 
-A cross-platform Flutter game project (mobile, desktop, and web).
+A cross-## Overview
+**Space2Soil** is a Flutter-based game project. The repo is set up for multi-platform targets, so you can iterate quickly on one codebase and run it on Android, iOS, desktop, and the web.
+
+> If you're evaluating the codebase, start in `lib/` (e.g., `main.dart`) to see the entry point and high-level app wiring.
+
+## Downloads & Documentation
+
+📱 **[Download APK](https://drive.google.com/file/d/1SD1cumN8DyJxbtc0yk7IuEI6IvoZCt_o/view?usp=drive_link)** - Get the latest Android version
+
+📚 **[Detailed Documentation](https://drive.google.com/drive/folders/14n7YMRyei5zy6ofnttroO1gog66ptImf?usp=drive_link)** - Complete project documentation and resources
+
+## Featuresrm Flutter game project (mobile, desktop, and web).
 
 > This repo contains the Flutter app sources plus platform scaffolding for Android, iOS, Web, Linux, macOS, and Windows. The code lives primarily under `lib/`, with game assets in `assets/`.
 
