@@ -93,6 +93,7 @@ flutter:
     - assets/images/watermelon/
 
     - assets/audios/
+    - assets/video/cloud_animation.mp4
 
   #   - images/a_dot_ham.jpeg
 

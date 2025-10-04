@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:video_player/video_player.dart';
 import 'result_screen.dart';
 import 'models/crop.dart';
 
@@ -35,35 +36,45 @@ class CloudAnimationScreen extends StatefulWidget {
 
 class _CloudAnimationScreenState extends State<CloudAnimationScreen>
     with TickerProviderStateMixin {
-  late AnimationController _cloud1Controller;
-  late AnimationController _cloud2Controller;
-  late AnimationController _cloud3Controller;
+  late VideoPlayerController _videoController;
   late AnimationController _fadeController;
   late AnimationController _textController;
+  late AnimationController _dotsController;
 
-  late Animation<Offset> _cloud1Animation;
-  late Animation<Offset> _cloud2Animation;
-  late Animation<Offset> _cloud3Animation;
   late Animation<double> _fadeAnimation;
   late Animation<double> _textAnimation;
+
+  bool _isVideoInitialized = false;
 
   @override
   void initState() {
     super.initState();
 
+    // Initialize video controller
+    _videoController = VideoPlayerController.asset(
+        'assets/video/cloud_animation.mp4',
+      )
+      ..initialize()
+          .then((_) {
+            if (mounted) {
+              setState(() {
+                _isVideoInitialized = true;
+              });
+              _videoController.setLooping(true);
+              _videoController.play();
+            }
+          })
+          .catchError((error) {
+            print('Video initialization error: $error');
+            // Continue with fallback background if video fails
+            if (mounted) {
+              setState(() {
+                _isVideoInitialized = false;
+              });
+            }
+          });
+
     // Initialize animation controllers
-    _cloud1Controller = AnimationController(
-      duration: const Duration(seconds: 3),
-      vsync: this,
-    );
-    _cloud2Controller = AnimationController(
-      duration: const Duration(seconds: 4),
-      vsync: this,
-    );
-    _cloud3Controller = AnimationController(
-      duration: const Duration(seconds: 5),
-      vsync: this,
-    );
     _fadeController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
@@ -72,23 +83,12 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
       duration: const Duration(milliseconds: 800),
       vsync: this,
     );
+    _dotsController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
 
     // Setup animations
-    _cloud1Animation = Tween<Offset>(
-      begin: const Offset(-1.5, 0),
-      end: const Offset(1.5, 0),
-    ).animate(CurvedAnimation(parent: _cloud1Controller, curve: Curves.linear));
-
-    _cloud2Animation = Tween<Offset>(
-      begin: const Offset(-1.8, 0),
-      end: const Offset(1.8, 0),
-    ).animate(CurvedAnimation(parent: _cloud2Controller, curve: Curves.linear));
-
-    _cloud3Animation = Tween<Offset>(
-      begin: const Offset(-2.0, 0),
-      end: const Offset(2.0, 0),
-    ).animate(CurvedAnimation(parent: _cloud3Controller, curve: Curves.linear));
-
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOut),
     );
@@ -109,14 +109,10 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
     await Future.delayed(const Duration(milliseconds: 500));
     _textController.forward();
 
-    // Start cloud animations with slight delays
-    _cloud1Controller.repeat();
-    await Future.delayed(const Duration(milliseconds: 300));
-    _cloud2Controller.repeat();
-    await Future.delayed(const Duration(milliseconds: 500));
-    _cloud3Controller.repeat();
+    // Start loading dots animation
+    _dotsController.repeat();
 
-    // Navigate to result screen after animation (for all stages)
+    // Navigate to result screen after exactly 3 seconds (regardless of 8-second video)
     await Future.delayed(const Duration(seconds: 3));
     if (mounted) {
       Navigator.pushReplacement(
@@ -146,186 +142,72 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
 
   @override
   void dispose() {
-    _cloud1Controller.dispose();
-    _cloud2Controller.dispose();
-    _cloud3Controller.dispose();
+    _videoController.dispose();
     _fadeController.dispose();
     _textController.dispose();
+    _dotsController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF87CEEB), // Sky blue
-              Color(0xFFE0F6FF), // Light blue
-              Color(0xFF98FB98), // Pale green
-            ],
-          ),
-        ),
-        child: AnimatedBuilder(
-          animation: _fadeAnimation,
-          builder: (context, child) {
-            return Opacity(
-              opacity: _fadeAnimation.value,
-              child: Stack(
-                children: [
-                  // Background elements
-                  _buildBackground(),
+      body: AnimatedBuilder(
+        animation: _fadeAnimation,
+        builder: (context, child) {
+          return Opacity(
+            opacity: _fadeAnimation.value,
+            child: Stack(
+              children: [
+                // Video background or fallback gradient
+                _buildVideoBackground(),
 
-                  // Cloud animations
-                  _buildCloud1(),
-                  _buildCloud2(),
-                  _buildCloud3(),
+                // Semi-transparent overlay for better text readability
+                Container(color: Colors.black.withOpacity(0.15)),
 
-                  // Processing text
-                  _buildProcessingText(),
+                // Processing text overlay
+                _buildProcessingText(),
 
-                  // Loading dots
-                  _buildLoadingDots(),
-                ],
-              ),
-            );
-          },
-        ),
+                // Loading dots overlay
+                _buildLoadingDots(),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildBackground() {
-    return Positioned.fill(
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF87CEEB), Color(0xFFE0F6FF), Color(0xFF98FB98)],
+  Widget _buildVideoBackground() {
+    if (_isVideoInitialized && _videoController.value.isInitialized) {
+      return Positioned.fill(
+        child: FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: _videoController.value.size.width,
+            height: _videoController.value.size.height,
+            child: VideoPlayer(_videoController),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildCloud1() {
-    return AnimatedBuilder(
-      animation: _cloud1Animation,
-      builder: (context, child) {
-        return SlideTransition(
-          position: _cloud1Animation,
-          child: Positioned(
-            top: 100,
-            left: 0,
-            right: 0,
-            child: _buildCloudShape(size: 80, opacity: 0.7),
+      );
+    } else {
+      // Fallback gradient background if video fails to load
+      return Positioned.fill(
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF87CEEB), // Sky blue
+                Color(0xFFE0F6FF), // Light blue
+                Color(0xFF98FB98), // Pale green
+              ],
+            ),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCloud2() {
-    return AnimatedBuilder(
-      animation: _cloud2Animation,
-      builder: (context, child) {
-        return SlideTransition(
-          position: _cloud2Animation,
-          child: Positioned(
-            top: 180,
-            left: 0,
-            right: 0,
-            child: _buildCloudShape(size: 100, opacity: 0.8),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCloud3() {
-    return AnimatedBuilder(
-      animation: _cloud3Animation,
-      builder: (context, child) {
-        return SlideTransition(
-          position: _cloud3Animation,
-          child: Positioned(
-            top: 260,
-            left: 0,
-            right: 0,
-            child: _buildCloudShape(size: 120, opacity: 0.6),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCloudShape({required double size, required double opacity}) {
-    return Center(
-      child: Container(
-        width: size * 2,
-        height: size,
-        child: Stack(
-          children: [
-            // Main cloud body
-            Positioned(
-              left: size * 0.3,
-              top: size * 0.3,
-              child: Container(
-                width: size * 1.4,
-                height: size * 0.6,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(opacity),
-                  borderRadius: BorderRadius.circular(size * 0.3),
-                ),
-              ),
-            ),
-            // Cloud puffs
-            Positioned(
-              left: size * 0.1,
-              top: size * 0.2,
-              child: Container(
-                width: size * 0.6,
-                height: size * 0.6,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(opacity),
-                  borderRadius: BorderRadius.circular(size * 0.3),
-                ),
-              ),
-            ),
-            Positioned(
-              right: size * 0.1,
-              top: size * 0.1,
-              child: Container(
-                width: size * 0.7,
-                height: size * 0.7,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(opacity),
-                  borderRadius: BorderRadius.circular(size * 0.35),
-                ),
-              ),
-            ),
-            Positioned(
-              left: size * 0.6,
-              top: size * 0.05,
-              child: Container(
-                width: size * 0.5,
-                height: size * 0.5,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(opacity),
-                  borderRadius: BorderRadius.circular(size * 0.25),
-                ),
-              ),
-            ),
-          ],
         ),
-      ),
-    );
+      );
+    }
   }
 
   Widget _buildProcessingText() {
@@ -334,8 +216,8 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
       builder: (context, child) {
         return Positioned(
           bottom: 200,
-          left: 0,
-          right: 0,
+          left: 20,
+          right: 20,
           child: Transform.scale(
             scale: _textAnimation.value,
             child: Column(
@@ -350,9 +232,14 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
                     color: Colors.white,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 4,
+                        color: Colors.black.withOpacity(0.7),
+                        blurRadius: 8,
                         offset: const Offset(2, 2),
+                      ),
+                      Shadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 16,
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -365,12 +252,17 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
                       : 'Stage ${widget.currentStage} → Stage ${widget.currentStage + 1}',
                   style: GoogleFonts.vt323(
                     fontSize: 20,
-                    color: Colors.white70,
+                    color: Colors.white,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.3),
-                        blurRadius: 3,
+                        color: Colors.black.withOpacity(0.7),
+                        blurRadius: 6,
                         offset: const Offset(1, 1),
+                      ),
+                      Shadow(
+                        color: Colors.black.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -393,20 +285,30 @@ class _CloudAnimationScreenState extends State<CloudAnimationScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(3, (index) {
           return AnimatedBuilder(
-            animation: _textController,
+            animation: _dotsController,
             builder: (context, child) {
-              final delay = index * 0.2;
-              final animationValue = (_textController.value - delay).clamp(
-                0.0,
-                1.0,
-              );
+              final delay = index * 0.3;
+              final animationValue = ((_dotsController.value - delay) % 1.0)
+                  .clamp(0.0, 1.0);
+              final opacity =
+                  (animationValue < 0.5)
+                      ? animationValue * 2
+                      : (1.0 - animationValue) * 2;
+
               return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4),
-                width: 12,
-                height: 12,
+                margin: const EdgeInsets.symmetric(horizontal: 6),
+                width: 14,
+                height: 14,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(animationValue),
-                  borderRadius: BorderRadius.circular(6),
+                  color: Colors.white.withOpacity(opacity),
+                  borderRadius: BorderRadius.circular(7),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
               );
             },
